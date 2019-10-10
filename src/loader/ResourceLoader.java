@@ -247,6 +247,7 @@ public class ResourceLoader {
 
 		try {
 			ClassLoader cl = URLClassLoader.newInstance(new URL[] { file.toURI().toURL() });
+			System.out.println(aiName);
 			Class<?> c = cl.loadClass(aiName);
 			AIInterface ai = (AIInterface) c.newInstance();
 

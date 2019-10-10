@@ -11,6 +11,10 @@ import struct.GameData;
 import struct.Key;
 import struct.ScreenData;
 
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+
 /**
  * AIのスレッドや処理を管理するクラス．
  */
@@ -88,6 +92,7 @@ public class AIController extends Thread {
 		this.framesData = new LinkedList<FrameData>();
 		this.clear();
 		this.isFighting = true;
+		System.out.println("initialize");
 //		boolean isInit = false;
 //		while(!isInit)
 //		try{
@@ -102,6 +107,9 @@ public class AIController extends Thread {
 	@Override
 	public void run() {
 		Logger.getAnonymousLogger().log(Level.INFO, "Start to run");
+		 KieServices ks = KieServices.Factory.get();
+	     KieContainer kContainer = ks.getKieClasspathContainer();
+	     KieSession kSession = kContainer.newKieSession("ksession-rules");
 		while (isFighting) {
 			synchronized (this.waitObj) {
 				try {
@@ -125,6 +133,13 @@ public class AIController extends Thread {
 			this.ai.processing();
 			setInput(this.ai.input());
 			ThreadController.getInstance().notifyEndProcess(this.playerNumber);
+			//System.out.println("updateJson called");
+
+			FrameData fd = new FrameData();
+			fd.currentFrameNumber = 100;
+		     kSession.insert(fd);
+		     kSession.fireAllRules();
+			
 		}
 
 	}

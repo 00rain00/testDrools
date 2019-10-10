@@ -74,11 +74,11 @@ public class ResourceDrawer {
 
 		drawHPGaugeImage(characters);
 
-		drawEnergyGaugeImage(characters);
+	//	drawEnergyGaugeImage(characters);
 
 		drawTimeImage(remainingTime);
 
-		drawRoundNumber(round);
+	//	drawRoundNumber(round);
 
 		drawHitCounter(characters);
 

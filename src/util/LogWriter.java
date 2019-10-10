@@ -335,6 +335,14 @@ public class LogWriter {
 	 *            data about keys input in this frame
 	 */
 	public void updateJson(FrameData frameData, KeyData keyDataInput) {
+		// KieServices ks = KieServices.Factory.get();
+	    // KieContainer kContainer = ks.getKieClasspathContainer();
+	    // KieSession kSession = kContainer.newKieSession("ksession-rules");
+	    // kSession.insert(frameData);
+	   //  kSession.fireAllRules();
+		//System.out.println("updateJson called");
+		
+		
 		// Check if this is a new round
 		if (frameData.getRound() != this.currentRound) {
 			this.generator.writeEnd();

@@ -22,7 +22,7 @@ public class FrameData {
 	/**
 	 * The current frame of the round.
 	 */
-	private int currentFrameNumber;
+	public int currentFrameNumber;
 
 	/**
 	 * The current round number.

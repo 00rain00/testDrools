@@ -236,7 +236,8 @@ public class Play extends GameScene {
 		this.keyData = new KeyData(InputManager.getInstance().getKeyData());
 		this.fighting.processingFight(this.nowFrame, this.keyData);
 		this.frameData = this.fighting.createFrameData(this.nowFrame, this.currentRound);
-
+		//log frameData
+		
 		// リプレイログ吐き出し
 		if (!FlagSetting.trainingModeFlag) {
 			LogWriter.getInstance().outputLog(this.dos, this.keyData, this.fighting.getCharacters());
