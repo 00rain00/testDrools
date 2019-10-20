@@ -6,14 +6,18 @@ import java.util.logging.Logger;
 
 import informationcontainer.RoundResult;
 import py4j.Py4JException;
-import struct.FrameData;
-import struct.GameData;
+import struct.FrameData;	
+import struct.GameData;				
 import struct.Key;
 import struct.ScreenData;
+import comment.CommentGenerate;
 
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import enumerate.Action;
+import struct.AttackData;
+import struct.CharacterData;
 
 /**
  * AIのスレッドや処理を管理するクラス．
@@ -107,9 +111,7 @@ public class AIController extends Thread {
 	@Override
 	public void run() {
 		Logger.getAnonymousLogger().log(Level.INFO, "Start to run");
-		 KieServices ks = KieServices.Factory.get();
-	     KieContainer kContainer = ks.getKieClasspathContainer();
-	     KieSession kSession = kContainer.newKieSession("ksession-rules");
+		
 		while (isFighting) {
 			synchronized (this.waitObj) {
 				try {
@@ -134,11 +136,6 @@ public class AIController extends Thread {
 			setInput(this.ai.input());
 			ThreadController.getInstance().notifyEndProcess(this.playerNumber);
 			//System.out.println("updateJson called");
-
-			FrameData fd = new FrameData();
-			fd.currentFrameNumber = 100;
-		     kSession.insert(fd);
-		     kSession.fireAllRules();
 			
 		}
 
@@ -178,8 +175,11 @@ public class AIController extends Thread {
 	 * @see FrameData
 	 */
 	public synchronized void setFrameData(FrameData fd) {
+		//add rule engine
 		if(fd != null){
 			this.framesData.addLast(fd);
+			
+			
 		}else{
 			this.framesData.addLast(new FrameData());
 		}
@@ -187,6 +187,24 @@ public class AIController extends Thread {
 		while (this.framesData.size() > DELAY) {
 			this.framesData.removeFirst();
 		}
+		
+		if(fd.currentFrameNumber>100&&fd.currentFrameNumber<110) {
+			System.out.println("initial kie ...");
+			//p1 action
+			 KieServices ks = KieServices.Factory.get();
+		     KieContainer kContainer = ks.getKieClasspathContainer();
+		     KieSession kSession = kContainer.newKieSession("ksession-rules");
+			CharacterData p1 = fd.getCharacter(true);
+			CharacterData p2 = fd.getCharacter(false);
+//			System.out.println("AIcontroller:"+p1.getHp());
+			kSession.insert(p1);
+			kSession.insert(p2);
+			//kSession.insert(fd);
+			kSession.fireAllRules();
+		}
+		
+		
+		
 	}
 
 	/**
@@ -236,4 +254,8 @@ public class AIController extends Thread {
 			this.waitObj.notifyAll();
 		}
 	}
+	
+	
+	
+	
 }
