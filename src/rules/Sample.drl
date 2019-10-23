@@ -1,0 +1,102 @@
+package src.rules
+ import struct.CharacterData
+import enumerate.State
+import enumerate.Action
+import comment.Message
+import java.lang.Math
+
+
+rule "backstep"
+no-loop
+
+when CharacterData(action.toString().equals("BACK_STEP"),$n:playerNumber)
+$m:Message()
+then $m.setNext( $m.getPlayerName($n)+ " steping back to keep distance");
+end
+
+rule "forjump"
+no-loop
+
+when  CharacterData(action.toString().equals("FOR_JUMP"),$n:playerNumber)
+$m:Message()
+then  $m.setNext($m.getPlayerName($n)+" Jumping forward to shorten the distance");
+end
+rule "backjump"
+no-loop
+ 
+when  CharacterData(action.toString().equals("BACK_JUMP"),$n:playerNumber)
+$m:Message()
+then   $m.setNext($m.getPlayerName($n)+" back jumping to keep distance");
+end
+rule "standb"
+no-loop
+when CharacterData(action.toString().equals("STAND_B"),$n:playerNumber)
+$m:Message()
+then 
+
+$m.setNext( $m.getPlayerName($n)+" Kick hit!");
+end
+rule "standfa"
+
+no-loop
+when  CharacterData(action.toString().equals("STAND_FA"),$n:playerNumber)
+$m:Message()
+then  $m.setNext($m.getPlayerName($n)+" Heavy puching!");
+end
+rule "sliding kick"
+no-loop
+
+when CharacterData(action.toString().equals("STAND_D_DB_BB"),$n:playerNumber)
+$m:Message()
+then  $m.setNext($m.getPlayerName($n)+" Sliding kick!");
+end
+rule "super1"
+when CharacterData(action.toString().equals("STAND_D_DF_FC"),$n:playerNumber)
+$m:Message()
+then $m.setNext($m.getPlayerName($n)+" Supper attack!");
+end
+rule "strongupper"
+when CharacterData(action.toString().equals("STAND_F_D_DFB"),$n:playerNumber)
+$m:Message()
+then $m.setNext($m.getPlayerName($n)+" Strong upper hit!");
+end
+
+rule "Projectileforward"
+no-loop
+
+when CharacterData(action.toString().equals("STAND_D_DF_FB"),$n:playerNumber)
+$m:Message()
+then  $m.setNext($m.getPlayerName($n)+" Projectile fire!");
+end
+rule "lowhp"
+when CharacterData(hp<=30,$n:playerNumber)
+$m:Message()
+then  $m.setNext($m.getPlayerName($n)+" is in DANGER!");
+end
+rule "lose"
+when CharacterData(hp<=0,$n:playerNumber)
+$m:Message()
+then  $m.setNext($m.getPlayerName($n)+" LOSE....");
+end
+rule "rightcorner"
+when  $p:CharacterData((Math.abs(480.0 - $p.getCenterX())/480.0)>0.9,$n:playerNumber)
+$m:Message()
+then   $m.setNext($m.getPlayerName($n)+" is forced in corner!");
+end
+rule "leftcorner"
+when  $p:CharacterData((Math.abs(480.0 - $p.getCenterX())/480.0)<0.1,$n:playerNumber)
+$m:Message()
+then   $m.setNext($m.getPlayerName($n)+" is forced in corner!");
+end
+
+
+
+
+
+rule "fireOutput"
+
+when $m:Message(current!=next)
+then
+System.out.println($m.getNext());
+$m.setCurrent($m.getNext());
+end

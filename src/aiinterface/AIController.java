@@ -11,10 +11,11 @@ import struct.GameData;
 import struct.Key;
 import struct.ScreenData;
 import comment.CommentGenerate;
-
+import comment.Message;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import enumerate.Action;
 import struct.AttackData;
 import struct.CharacterData;
@@ -75,7 +76,10 @@ public class AIController extends Thread {
 	public AIController(AIInterface ai) {
 		this.ai = ai;
 	}
-
+	 static KieServices ks;
+	 static  KieContainer kContainer;
+	 static KieSession kSession;
+	 static Message msg;
 	/**
 	 * 引数で与えられたパラメータをセットし，初期化を行う．
 	 *
@@ -96,7 +100,8 @@ public class AIController extends Thread {
 		this.framesData = new LinkedList<FrameData>();
 		this.clear();
 		this.isFighting = true;
-		System.out.println("initialize");
+		msg = new Message();
+		//System.out.println("initialize");
 //		boolean isInit = false;
 //		while(!isInit)
 //		try{
@@ -135,7 +140,30 @@ public class AIController extends Thread {
 			this.ai.processing();
 			setInput(this.ai.input());
 			ThreadController.getInstance().notifyEndProcess(this.playerNumber);
-			//System.out.println("updateJson called");
+			
+			
+				
+			     
+//			   if(!this.framesData.isEmpty()) {
+//				   try {
+//				   FrameData currentFrameData = this.framesData.removeFirst();
+//				   if(currentFrameData.currentFrameNumber>1) {
+//					   System.out.println("fire rules");
+//					   CharacterData p1 = this.framesData.removeFirst().getCharacter(true);
+//					   System.out.println(p1.getState());
+//					   kSession.insert(p1);
+//					   kSession.fireAllRules();
+//				   }}catch(Exception ex) {
+//					   System.out.println(ex);
+//				   }
+//			   }
+//				  
+//				  
+				
+
+			   
+
+
 			
 		}
 
@@ -180,6 +208,27 @@ public class AIController extends Thread {
 			this.framesData.addLast(fd);
 			
 			
+			  ks = KieServices.Factory.get();
+		     kContainer = ks.getKieClasspathContainer();
+		      kSession = kContainer.newKieSession("ksession-rules");
+
+		      
+		      if(fd.currentFrameNumber%5==0&&fd.currentFrameNumber>1) {
+			//System.out.println("x coordinate:"+(double)Math.abs(480.0 - fd.getCharacter(false).getCenterX())/480.0);
+
+		    	  CharacterData p1 = fd.getCharacter(true);
+		  		CharacterData p2 = fd.getCharacter(false);
+//		  		//System.out.println("setFrameData:"+p1.getAction());
+		  		kSession.insert(p1);
+	  		    kSession.insert(p2);
+//		  		
+		  		kSession.insert(msg);
+//		  		
+
+	  		kSession.fireAllRules();
+		      }
+
+			
 		}else{
 			this.framesData.addLast(new FrameData());
 		}
@@ -187,21 +236,7 @@ public class AIController extends Thread {
 		while (this.framesData.size() > DELAY) {
 			this.framesData.removeFirst();
 		}
-		
-		if(fd.currentFrameNumber>100&&fd.currentFrameNumber<110) {
-			System.out.println("initial kie ...");
-			//p1 action
-			 KieServices ks = KieServices.Factory.get();
-		     KieContainer kContainer = ks.getKieClasspathContainer();
-		     KieSession kSession = kContainer.newKieSession("ksession-rules");
-			CharacterData p1 = fd.getCharacter(true);
-			CharacterData p2 = fd.getCharacter(false);
-//			System.out.println("AIcontroller:"+p1.getHp());
-			kSession.insert(p1);
-			kSession.insert(p2);
-			//kSession.insert(fd);
-			kSession.fireAllRules();
-		}
+
 		
 		
 		

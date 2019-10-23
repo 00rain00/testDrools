@@ -243,10 +243,11 @@ public class ResourceLoader {
 	 *         読み込んだAIが無ければnullを返す．
 	 */
 	public AIController loadAI(String aiName) {
-		File file = new File("./data/ai/" + aiName + ".jar");
+		File file = new File("data/ai/" + aiName + ".jar");
 
 		try {
 			ClassLoader cl = URLClassLoader.newInstance(new URL[] { file.toURI().toURL() });
+			
 			System.out.println(aiName);
 			Class<?> c = cl.loadClass(aiName);
 			AIInterface ai = (AIInterface) c.newInstance();

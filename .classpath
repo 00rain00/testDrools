@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="jar/FightingICE.jar"/>
 	<classpathentry kind="lib" path="lib/lwjgl/lwjgl_util.jar"/>
 	<classpathentry kind="lib" path="lib/lwjgl/lwjgl-glfw.jar"/>
@@ -98,5 +97,6 @@
 	<classpathentry kind="lib" path="/Users/yulincai/git/FightingICE/lib/drools-distribution-7.3.0.Final/binaries/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="/Users/yulincai/git/FightingICE/lib/drools-distribution-7.3.0.Final/binaries/xstream-1.4.9.jar"/>
 	<classpathentry kind="lib" path="/Users/yulincai/git/FightingICE/slf4j-1.7.26/slf4j-simple-1.7.26.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
