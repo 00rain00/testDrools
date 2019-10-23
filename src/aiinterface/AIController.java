@@ -115,6 +115,7 @@ public class AIController extends Thread {
 
 	@Override
 	public void run() {
+		System.out.println("jjjjj");
 		Logger.getAnonymousLogger().log(Level.INFO, "Start to run");
 		
 		while (isFighting) {
