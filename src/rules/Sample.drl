@@ -97,6 +97,6 @@ rule "fireOutput"
 
 when $m:Message(current!=next)
 then
-System.out.println($m.getNext());
+//System.out.println($m.getNext());
 $m.setCurrent($m.getNext());
 end

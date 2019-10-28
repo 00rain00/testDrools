@@ -1,8 +1,12 @@
 package comment;
 import org.apache.maven.model.building.Result;
+import java.io.IOException;
+import com.cavariux.twitchirc.Chat.*;
+//import testPbot.CavsBot;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import comment.Fightbot;
 public class CommentGenerate {
 	
 	public static void checkKie() {
@@ -22,7 +26,19 @@ public class CommentGenerate {
 		
 	}
 	
-	
+	public static synchronized void twitchBot(String msg) {
+		Fightbot bot = new Fightbot();
+		bot.connect();
+        Channel channel = bot.joinChannel("#strecno");
+        try {
+			//Thread.sleep(1500);
+			bot.sendMessage(msg, channel);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 	
 }

@@ -16,10 +16,14 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
+
+import com.cavariux.twitchirc.Chat.Channel;
+
 import enumerate.Action;
 import struct.AttackData;
 import struct.CharacterData;
-
+import comment.Fightbot;
+import com.cavariux.twitchirc.Chat.*;
 /**
  * AIのスレッドや処理を管理するクラス．
  */
@@ -80,6 +84,9 @@ public class AIController extends Thread {
 	 static  KieContainer kContainer;
 	 static KieSession kSession;
 	 static Message msg;
+	 public Fightbot fbot;
+	public  Channel channel;
+	public CommentGenerate cg;
 	/**
 	 * 引数で与えられたパラメータをセットし，初期化を行う．
 	 *
@@ -101,7 +108,18 @@ public class AIController extends Thread {
 		this.clear();
 		this.isFighting = true;
 		msg = new Message();
-		//System.out.println("initialize");
+		this.fbot = new Fightbot();
+		String cName = "#hunteer_999";
+		
+		try {
+			System.out.println("initial bot connections :"+cName);
+			fbot.connect();
+			 channel = fbot.joinChannel(cName);
+			
+		} catch(Exception e) {
+			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
+		}
+		System.out.println("initialize");
 //		boolean isInit = false;
 //		while(!isInit)
 //		try{
@@ -115,7 +133,7 @@ public class AIController extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("jjjjj");
+		
 		Logger.getAnonymousLogger().log(Level.INFO, "Start to run");
 		
 		while (isFighting) {
@@ -214,7 +232,7 @@ public class AIController extends Thread {
 		      kSession = kContainer.newKieSession("ksession-rules");
 
 		      
-		      if(fd.currentFrameNumber%5==0&&fd.currentFrameNumber>1) {
+		      if(fd.currentFrameNumber%10==0&&fd.currentFrameNumber>1) {
 			//System.out.println("x coordinate:"+(double)Math.abs(480.0 - fd.getCharacter(false).getCenterX())/480.0);
 
 		    	  CharacterData p1 = fd.getCharacter(true);
@@ -227,6 +245,11 @@ public class AIController extends Thread {
 //		  		
 
 	  		kSession.fireAllRules();
+	  		//System.out.println(msg.getNext());
+	  		fbot.sendMessage(msg.getNext(),channel);
+	  //		CommentGenerate.twitchBot(msg.getNext());
+	  	
+	  
 		      }
 
 			
