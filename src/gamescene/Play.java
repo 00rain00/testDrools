@@ -107,6 +107,7 @@ public class Play extends GameScene {
 	 static int commentLimit;
 	 public Fightbot fbot;
 	public  Channel channel;
+	public String j;
 	public Play() {
 		// 以下4行の処理はgamesceneパッケージ内クラスのコンストラクタには必ず含める
 		this.gameSceneName = GameSceneName.PLAY;
