@@ -523,8 +523,8 @@ public class LogWriter {
 	}
 	public void writeHighlightToJson(Highlight hl) {
 		this.generator.write("frameNumber",hl.frameNumber);
-		this.generator.write("p1DistanceToCenter",hl.p1DistanceToCenter);
-		this.generator.write("p2DistanceToCenter",hl.p2DistanceToCenter);
+		this.generator.write("p1DistanceToCenter",hl.p1Position);
+		this.generator.write("p2DistanceToCenter",hl.p2Position);
 		this.generator.write("difDistance",hl.difDis);
 		this.generator.write("actionScore",hl.actionScore);
 		this.generator.write("p1Damage",hl.p1Damage);

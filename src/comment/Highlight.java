@@ -4,6 +4,32 @@ public class Highlight {
 	public double hlScore;
 	//public double hlScoreK;
 	public double damageScore;//re
+	public double difDis; // distance to each other
+	public double time;
+	public double actionScore;
+	public int frameNumber;
+	
+	public double p1Position;
+	public double getP1Position() {
+		return p1Position;
+	}
+	public void setP1Position(double p1Position) {
+		this.p1Position = p1Position;
+	}
+	public double getP2Position() {
+		return p2Position;
+	}
+	public void setP2Position(double p2Position) {
+		this.p2Position = p2Position;
+	}
+
+	public double p2Position;
+	public double p1Damage;
+	public double p2Damage;
+	public double p1Energy;
+	public double p2Energy;
+	public double p1Hits;
+	public double p2Hits;
 	public double getHlScore() {
 		return hlScore;
 	}
@@ -40,18 +66,7 @@ public class Highlight {
 	public void setFrameNumber(int frameNumber) {
 		this.frameNumber = frameNumber;
 	}
-	public double getP1DistanceToCenter() {
-		return p1DistanceToCenter;
-	}
-	public void setP1DistanceToCenter(double p1DistanceToCenter) {
-		this.p1DistanceToCenter = p1DistanceToCenter;
-	}
-	public double getP2DistanceToCenter() {
-		return p2DistanceToCenter;
-	}
-	public void setP2DistanceToCenter(double p2DistanceToCenter) {
-		this.p2DistanceToCenter = p2DistanceToCenter;
-	}
+	
 	public double getP1Damage() {
 		return p1Damage;
 	}
@@ -88,18 +103,7 @@ public class Highlight {
 	public void setP2Hits(double p2Hits) {
 		this.p2Hits = p2Hits;
 	}
-	public double difDis; // distance to each other
-	public double time;
-	public double actionScore;
-	public int frameNumber;
-	public double p1DistanceToCenter;
-	public double p2DistanceToCenter;
-	public double p1Damage;
-	public double p2Damage;
-	public double p1Energy;
-	public double p2Energy;
-	public double p1Hits;
-	public double p2Hits;
+	
 	public Highlight() {
 		super();
 		this.hlScore = -1;
@@ -108,8 +112,8 @@ public class Highlight {
 		this.time = -1;
 		this.actionScore = -1;
 		this.frameNumber = -1;
-		this.p1DistanceToCenter = -1;
-		this.p2DistanceToCenter = -1;
+		this.p1Position = -1;
+		this.p2Position = -1;
 		this.p1Damage = -1;
 		this.p2Damage = -1;
 		this.p1Energy = -1;

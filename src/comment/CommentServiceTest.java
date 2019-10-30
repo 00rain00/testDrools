@@ -30,7 +30,7 @@ public class CommentServiceTest {
 		fd.setCurrentFrameNumber(1);
 		fd.setCharacterData(cd1,cd2);
 		Highlight hl = CommentService.setHighlight(fd);
-		assertEquals("not same",hl.getP1Damage(),30,0);
+		assertEquals("not same",hl.getP1Damage(),300,0);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

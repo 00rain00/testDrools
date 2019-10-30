@@ -17,10 +17,11 @@ public class CommentService {
 			try {
 			//p1
 			CharacterData p1 = fd.getCharacter(true);
+			CharacterData p2 = fd.getCharacter(false);
 			hl.setP1Damage(oriHp-p1.getHp());
 			
 			//p2
-			CharacterData p2 = fd.getCharacter(false);
+			
 			
 			}catch(Exception e) {
 				logger.error(e.getMessage(), e);
