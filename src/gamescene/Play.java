@@ -35,6 +35,8 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import comment.Fightbot;
+import comment.Highlight;
+import comment.CommentService;
 import com.cavariux.twitchirc.Chat.*;
 /**
  * 対戦中のシーンを扱うクラス．
@@ -267,45 +269,59 @@ public class Play extends GameScene {
 		this.keyData = new KeyData(InputManager.getInstance().getKeyData());
 		this.fighting.processingFight(this.nowFrame, this.keyData);
 		this.frameData = this.fighting.createFrameData(this.nowFrame, this.currentRound);
-		//log frameData
-		
+		//generate hl data
+		Highlight hl = CommentService.setHighlight(this.frameData);
 			   try {
-			   FrameData currentFrameData = this.frameData;
-			  
-			   if(currentFrameData.currentFrameNumber>1&&currentFrameData.currentFrameNumber%10==0) {
+			 
+			  //
+			 
+				   
+				   CharacterData p1 =  this.frameData.getCharacter(true);
+				   CharacterData p2 =  this.frameData.getCharacter(false);
+				   
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+				   FrameData currentFrameData = this.frameData;
+			   if(currentFrameData.currentFrameNumber>=1&currentFrameData.currentFrameNumber%1==0) {
 				//   i=i+1;
 				   System.out.println(currentFrameData.currentFrameNumber+"::::::::");
-				   CharacterData p1 =  currentFrameData.getCharacter(true);
-				   CharacterData p2 =  currentFrameData.getCharacter(false);
+				   
 //				  
-				   kSession.insert(p1);
-				   kSession.insert(p2);
-				   kSession.insert(msg);
-				   
-				  
-				  
-				  
-				   kSession.fireAllRules();
-			  		
-				  
-				   //check limit
-				   if(commentLimit>0) {
-					   System.out.println("comment limit :"+commentLimit);
-					   ArrayList<String> comments = msg.getComments();
-				  		for(String com:comments) {
-				  			System.out.println(com);
-				  			commentLimit = commentLimit-1;
-				  			fbot.sendMessage(com, channel);
-				  		}
-				  		msg.emptyComments();
-				   }else {
-					   System.out.println("over limit");
-				   }
-				   //nearly 30s  50 per 30s 
-				   if(currentFrameData.currentFrameNumber>=1700) {
-					   commentLimit = 50;
-				   }
-				   
+//				   kSession.insert(p1);
+//				   kSession.insert(p2);
+//				   kSession.insert(msg);
+//				   
+//				  
+//				  
+//				  
+//				   kSession.fireAllRules();
+//			  		
+//				  
+//				   //check limit
+//				   if(commentLimit>0) {
+//					   System.out.println("comment limit :"+commentLimit);
+//					   ArrayList<String> comments = msg.getComments();
+//				  		for(String com:comments) {
+//				  			System.out.println(com);
+//				  			commentLimit = commentLimit-1;
+//				  			fbot.sendMessage(com, channel);
+//				  		}
+//				  		msg.emptyComments();
+//				   }else {
+//					   System.out.println("over limit");
+//				   }
+//				   //nearly 30s  50 per 30s 
+//				   if(currentFrameData.currentFrameNumber>=1700) {
+//					   commentLimit = 50;
+//				   }
+//				   
 				   
 				   
 				   
@@ -319,7 +335,8 @@ public class Play extends GameScene {
 		}
 
 		if (FlagSetting.jsonFlag) {
-			LogWriter.getInstance().updateJson(this.frameData, this.keyData);
+			//LogWriter.getInstance().updateJson(this.frameData, this.keyData);
+			LogWriter.getInstance().updateJsonHl(hl, this.frameData);
 		}
 
 		if (FlagSetting.enableWindow) {

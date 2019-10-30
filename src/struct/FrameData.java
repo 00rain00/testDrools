@@ -1,5 +1,6 @@
 package struct;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -261,5 +262,11 @@ public class FrameData {
 	public int getDistanceY() {
 		return Math.abs((this.characterData[0].getCenterY() - this.characterData[1].getCenterY()));
 	}
-
+	public void setCurrentFrameNumber(int fn) {
+		this.currentFrameNumber = fn;
+	}
+	public void setCharacterData(CharacterData p1, CharacterData p2) {
+		this.characterData[0]=p1;
+		this.characterData[1]=p2;
+	}
 }

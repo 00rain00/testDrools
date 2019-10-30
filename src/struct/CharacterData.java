@@ -215,8 +215,8 @@ public class CharacterData {
 		this.hitConfirm = characterData.isHitConfirm();
 		this.hitCount = characterData.getHitCount();
 		this.lastHitFrame = characterData.getLastHitFrame();
-		this.inputCommands = characterData.getInputCommand();
-		this.processedCommands = characterData.getProcessedCommand();
+		//this.inputCommands = characterData.getInputCommand();
+		//this.processedCommands = characterData.getProcessedCommand();
 	}
 
 	/**
@@ -739,5 +739,7 @@ public class CharacterData {
 	public void setProcessedCommand(Deque<Key> inputCommand) {
 		this.processedCommands = new LinkedList<Key>(inputCommand);
 	}
-
+	public CharacterData() {
+		
+	}
 }

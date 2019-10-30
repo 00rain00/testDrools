@@ -39,13 +39,6 @@ public class Message {
 	public void emptyComments(){
 		comments.clear();
 	}
-	public float getHlScore(FrameData fd) {
-		float hl = 0;
-		float oriHp = 100;
-		
-		
-		
-		return hl;
-	}
+	
 	
 }
