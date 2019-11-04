@@ -147,6 +147,7 @@ public class Play extends GameScene {
 			DebugActionData.getInstance().initialize();
 		}
 		if (FlagSetting.jsonFlag) {
+			System.out.println("initialize json flag");
 			String jsonName = LogWriter.getInstance().createOutputFileName("./log/replay/", this.timeInfo);
 			LogWriter.getInstance().initJson(jsonName + ".json");
 		}
@@ -165,17 +166,19 @@ public class Play extends GameScene {
 		if (FlagSetting.enableWindow && !FlagSetting.muteFlag) {
 			SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
 		}
-		this.fbot = new Fightbot();
-		String cName = "#hunteer_999";
 		
-		try {
-			System.out.println("initial bot connections :"+cName);
-			fbot.connect();
-			 channel = fbot.joinChannel(cName);
-			
-		} catch(Exception e) {
-			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
-		}
+		
+//		try {
+//			String cName = "#hunteer_999";
+//			System.out.println("initial bot connections :"+cName);
+//			this.fbot = new Fightbot();
+//			
+//			fbot.connect();
+//			 channel = fbot.joinChannel(cName);
+//			
+//		} catch(Exception e) {
+//			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
+//		}
 	}
 	
 
@@ -270,7 +273,7 @@ public class Play extends GameScene {
 		this.fighting.processingFight(this.nowFrame, this.keyData);
 		this.frameData = this.fighting.createFrameData(this.nowFrame, this.currentRound);
 		//generate hl data
-		Highlight hl = CommentService.setHighlight(this.frameData);
+		Highlight hl = CommentService.setHighlight(this.frameData);  // probally return null
 			   try {
 			 
 			  //
@@ -278,9 +281,9 @@ public class Play extends GameScene {
 				   
 				   CharacterData p1 =  this.frameData.getCharacter(true);
 				   CharacterData p2 =  this.frameData.getCharacter(false);
-				   
-			   
-			   
+				   //System.out.println("p1:"+p1.getCenterX());
+				  // System.out.println("p2:"+p2.getCenterX());
+				   //System.out.println("dif;"+(double)(Math.abs(p1.getCenterX()-p2.getCenterX())-41.0)/879.0);
 			   
 			   
 			   
@@ -291,7 +294,7 @@ public class Play extends GameScene {
 				   FrameData currentFrameData = this.frameData;
 			   if(currentFrameData.currentFrameNumber>=1&currentFrameData.currentFrameNumber%1==0) {
 				//   i=i+1;
-				   System.out.println(currentFrameData.currentFrameNumber+"::::::::");
+				  // System.out.println(currentFrameData.currentFrameNumber+"::::::::");
 				   
 //				  
 //				   kSession.insert(p1);

@@ -313,13 +313,13 @@ public class LogWriter {
 			this.generator.writeEnd();
 
 			// TODO: Combo tables
-
+			
 			// Open rounds array
 			this.generator.writeStartArray("rounds");
 
 			// Open frames array
 			this.generator.writeStartArray();
-
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -370,23 +370,24 @@ public class LogWriter {
 		this.generator.flush();
 	}
 	public void updateJsonHl(Highlight hl,FrameData frameData) {
-		Logger.getAnonymousLogger().log(Level.INFO, "updateJsonhl called");
+		//Logger.getAnonymousLogger().log(Level.INFO, "updateJsonhl called");
 		// Check if this is a new round
 				if (frameData.getRound() != this.currentRound) {
 					this.generator.writeEnd();
 					this.generator.writeStartArray();
 					this.currentRound = frameData.getRound();
 				}
-				// Open frame object
+				// Open hl object
 				this.generator.writeStartObject();
 
 				this.generator.write("current_frame", frameData.getFramesNumber());
 				this.generator.write("remaining_frames", frameData.getRemainingFramesNumber());
 				//write hl data
 				this.writeHighlightToJson(hl);
+				
+				//end hl object
 				this.generator.writeEnd();
-				// Close frame object
-				this.generator.writeEnd(); // Players data
+				
 
 				this.generator.flush();
 				
@@ -534,7 +535,18 @@ public class LogWriter {
 		this.generator.write("p1HitCount",hl.p1Hits);
 		this.generator.write("p2HitCount",hl.p2Hits);
 		this.generator.write("IshiScore",hl.hlScore);
-		this.generator.writeEnd(); 
+		this.generator.write("damageScore",hl.damageScore);
+		this.generator.write("p1Position",hl.p1Position);
+		this.generator.write("p2Position",hl.p2Position);
+		this.generator.write("p2StartAddEnergy",hl.p2startAddEnergy);
+		this.generator.write("p1StartAddEnergy",hl.p1startAddEnergy);
+		this.generator.write("p1hitAddEnergy",hl.p1hitAddEnergy);
+		this.generator.write("p2hitAddEnergy",hl.p2hitAddEnergy);
+		this.generator.write("p2guardAddEnergy",hl.getP2guardAddEnergy());
+		this.generator.write("p1guardAddEnergy",hl.getP1guardAddEnergy());
+		this.generator.write("p1giveEnergy",hl.p1giveEnergy);
+		this.generator.write("p2giveEnergy",hl.p2giveEnergy);
+		
 	}
 	
 	
