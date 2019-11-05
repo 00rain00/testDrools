@@ -108,28 +108,22 @@ public class AIController extends Thread {
 		this.framesData = new LinkedList<FrameData>();
 		this.clear();
 		this.isFighting = true;
-		msg = new Message();
-		this.fbot = new Fightbot();
-		String cName = "#hunteer_999";
-		
-		try {
-			System.out.println("initial bot connections :"+cName);
-			fbot.connect();
-			 channel = fbot.joinChannel(cName);
-			
-		} catch(Exception e) {
-			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
-		}
-		System.out.println("initialize");
-//		boolean isInit = false;
-//		while(!isInit)
-//		try{
-			this.ai.initialize(gameData, playerNumber);
-//			isInit = true;
-//		} catch (Py4JException e) {
-//			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot Initialize AI");
-//			InputManager.getInstance().createAIcontroller();
+		this.ai.initialize(gameData, playerNumber);
+//		msg = new Message();
+//		this.fbot = new Fightbot();
+//		String cName = "#hunteer_999";
+//		
+//		try {
+//			System.out.println("initial bot connections :"+cName);
+//			fbot.connect();
+//			 channel = fbot.joinChannel(cName);
+//			
+//		} catch(Exception e) {
+//			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
 //		}
+
+			
+
 	}
 
 	@Override

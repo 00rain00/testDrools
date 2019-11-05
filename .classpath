@@ -90,7 +90,7 @@
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/drools-distribution-7.3.0.Final/binaries/poi-ooxml-3.15.jar"/>
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/drools-distribution-7.3.0.Final/binaries/poi-ooxml-schemas-3.15.jar"/>
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/drools-distribution-7.3.0.Final/binaries/protobuf-java-2.6.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/drools-distribution-7.3.0.Final/binaries/slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/drools-distribution-7.3.0.Final/binaries/slf4j-api-1.7.7.jar" sourcepath="C:/Users/irvine/.m2/repository/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/drools-distribution-7.3.0.Final/binaries/stax-api-1.0-2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/drools-distribution-7.3.0.Final/binaries/uberfire-maven-integration-1.3.0.Final.jar"/>
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/drools-distribution-7.3.0.Final/binaries/uberfire-maven-support-1.3.0.Final.jar"/>
@@ -107,5 +107,6 @@
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/natives/windows/lwjgl-opengl-natives-windows.jar"/>
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/TwitchIRC-all-1.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/slf4j-1.7.26/slf4j-simple-1.7.26.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

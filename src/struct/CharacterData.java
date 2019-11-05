@@ -739,5 +739,7 @@ public class CharacterData {
 	public void setProcessedCommand(Deque<Key> inputCommand) {
 		this.processedCommands = new LinkedList<Key>(inputCommand);
 	}
-
+	public CharacterData() {
+		
+	}
 }
