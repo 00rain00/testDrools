@@ -7,8 +7,11 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import comment.Fightbot;
+import comment.Highlight;
+import struct.FrameData;
+import struct.CharacterData;
 public class CommentGenerate {
-	
+	static  double maxHp = 400;
 	public static void checkKie() {
 		// TODO Auto-generated method stub
 	System.out.println("commentgenerate called");

@@ -38,6 +38,7 @@ $m:Message()
 then 
 $m.setNext( $m.getPlayerName($n)+" Kick hit!");
 $m.addComments($m.getPlayerName($n)+" Kick hit!");
+$m.addComments("Hokusai created the Thirty-Six Views both as a response to a domestic travel boom and as part of a personal obsession with Mount Fuji.");
 end
 rule "standfa"
 
@@ -46,6 +47,7 @@ when  CharacterData(action.toString().equals("STAND_FA"),$n:playerNumber)
 $m:Message()
 then  $m.setNext($m.getPlayerName($n)+" Heavy puching!");
 $m.addComments($m.getPlayerName($n)+" Heavy puching!");
+$m.addComments("The Great Wave print and Fine Wind, Clear Morning, that secured Hokusai’s fame both in Japan and overseas. ");
 end
 rule "sliding kick"
 no-loop
@@ -81,6 +83,7 @@ when CharacterData(hp<=30,$n:playerNumber)
 $m:Message()
 then  $m.setNext($m.getPlayerName($n)+" is in DANGER!");
 $m.addComments($m.getPlayerName($n)+" is in DANGER!");
+$m.addComments("This ukiyoe is draw by Hokusai in 1815"); 
 end
 rule "lose"
 when CharacterData(hp<=0,$n:playerNumber)
