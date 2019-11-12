@@ -49,3 +49,9 @@ debugData
 #intellJ
 /.idea/*
 *.iml
+.classpath
+.classpath
+.DS_Store
+data/.DS_Store
+lib/.DS_Store
+log/.DS_Store
