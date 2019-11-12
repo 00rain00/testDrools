@@ -209,7 +209,8 @@ public class InputManager<Data> {
 				if (this.predifinedAIs.containsKey(aiNames[i])) {
 					this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
 				} else {
-					this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+					//this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+					this.ais[i] = ResourceLoader.getInstance().loadBuildInAI();
 				}
 			} else {
 				this.ais[i] = null;

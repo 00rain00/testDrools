@@ -1,13 +1,22 @@
 package comment;
 import struct.FrameData;
 import struct.CharacterData;
+import java.util.ArrayList;
 public class Message {
 	public String current;
 	public String next;
+	public ArrayList<String>comments;
 	
+	public ArrayList<String> getComments() {
+		return comments;
+	}
+	public void setComments(ArrayList<String> comments) {
+		this.comments = comments;
+	}
 	public Message(){
 		this.current="";
 		this.next="";
+		this.comments = new ArrayList<String>();
 	}
 	public String getCurrent() {
 		return current;
@@ -24,13 +33,12 @@ public class Message {
 	public String getPlayerName(boolean player) {
 		return (player?"ZEN":"GARNET");
 	}
-	public float getHlScore(FrameData fd) {
-		float hl = 0;
-		float oriHp = 100;
-		
-		
-		
-		return hl;
+	public void addComments(String comment) {
+		comments.add(comment);
 	}
+	public void emptyComments(){
+		comments.clear();
+	}
+	
 	
 }

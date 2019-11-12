@@ -1274,4 +1274,36 @@ public class Character {
 	public boolean isSimulateProcess() {
 		return this.isSimulateProcess;
 	}
+	public void roundReset(int hp, int energy,int remainingFrame,boolean isControl,boolean playerNumber) {
+		
+			this.hp = hp;
+		
+
+		
+			this.energy = energy;
+		
+
+		this.speedX = 0;
+		this.speedY = 0;
+		this.state = State.STAND;
+		this.action = Action.NEUTRAL;
+		this.attack = null;
+		this.remainingFrame = remainingFrame;
+		this.control = isControl;
+		this.hitConfirm = false;
+		this.hitCount = 0;
+		this.lastHitFrame = 0;
+		this.playerNumber=playerNumber;
+		if (this.playerNumber) {
+			this.front = true;
+			// 初期の立ち位置
+			this.x = 100 + this.graphicAdjustInitialX[0];
+			this.y = 335;
+		} else {
+			this.front = false;
+			// 初期の立ち位置
+			this.x = 460+ this.graphicAdjustInitialX[1];;
+			this.y = 335;
+		}
+	}
 }

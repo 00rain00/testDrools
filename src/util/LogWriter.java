@@ -26,6 +26,7 @@ import struct.CharacterData;
 import struct.FrameData;
 import struct.HitArea;
 import struct.Key;
+import comment.Highlight;
 
 public class LogWriter {
 
@@ -312,13 +313,13 @@ public class LogWriter {
 			this.generator.writeEnd();
 
 			// TODO: Combo tables
-
+			
 			// Open rounds array
 			this.generator.writeStartArray("rounds");
 
 			// Open frames array
 			this.generator.writeStartArray();
-
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -335,12 +336,7 @@ public class LogWriter {
 	 *            data about keys input in this frame
 	 */
 	public void updateJson(FrameData frameData, KeyData keyDataInput) {
-		// KieServices ks = KieServices.Factory.get();
-	    // KieContainer kContainer = ks.getKieClasspathContainer();
-	    // KieSession kSession = kContainer.newKieSession("ksession-rules");
-	    // kSession.insert(frameData);
-	   //  kSession.fireAllRules();
-		//System.out.println("updateJson called");
+		
 		
 		
 		// Check if this is a new round
@@ -373,6 +369,34 @@ public class LogWriter {
 
 		this.generator.flush();
 	}
+	public void updateJsonHl(Highlight hl,FrameData frameData) {
+		//Logger.getAnonymousLogger().log(Level.INFO, "updateJsonhl called");
+		// Check if this is a new round
+				if (frameData.getRound() != this.currentRound) {
+					this.generator.writeEnd();
+					this.generator.writeStartArray();
+					this.currentRound = frameData.getRound();
+				}
+				// Open hl object
+				this.generator.writeStartObject();
+
+				this.generator.write("current_frame", frameData.getFramesNumber());
+				this.generator.write("remaining_frames", frameData.getRemainingFramesNumber());
+				//write hl data
+				this.writeHighlightToJson(hl);
+				
+				//end hl object
+				this.generator.writeEnd();
+				
+
+				this.generator.flush();
+				
+	}
+	
+	
+	
+	
+	
 
 	/**
 	 * Uses this.generator to write the data of a character in JSON.<br>
@@ -484,7 +508,7 @@ public class LogWriter {
 	 * Uses this.generator to close the JSON tags that are still open and then
 	 * closes the generator.
 	 */
-	public void finalizeJson() {
+	public void finalizeJson() {				
 		// Close rounds array
 		this.generator.writeEnd();
 
@@ -498,4 +522,32 @@ public class LogWriter {
 		this.generator.flush();
 		this.generator.close();
 	}
+	public void writeHighlightToJson(Highlight hl) {
+		this.generator.write("frameNumber",hl.frameNumber);
+		this.generator.write("p1DistanceToCenter",hl.p1Position);
+		this.generator.write("p2DistanceToCenter",hl.p2Position);
+		this.generator.write("difDistance",hl.difDis);
+		this.generator.write("actionScore",hl.actionScore);
+		this.generator.write("p1Damage",hl.p1Damage);
+		this.generator.write("p2Damage",hl.p2Damage);
+		this.generator.write("p1Energy",hl.p1Energy);
+		this.generator.write("p2Energy",hl.p2Energy);
+		this.generator.write("p1HitCount",hl.p1Hits);
+		this.generator.write("p2HitCount",hl.p2Hits);
+		this.generator.write("IshiScore",hl.hlScore);
+		this.generator.write("damageScore",hl.damageScore);
+		this.generator.write("p1Position",hl.p1Position);
+		this.generator.write("p2Position",hl.p2Position);
+		this.generator.write("p2StartAddEnergy",hl.p2startAddEnergy);
+		this.generator.write("p1StartAddEnergy",hl.p1startAddEnergy);
+		this.generator.write("p1hitAddEnergy",hl.p1hitAddEnergy);
+		this.generator.write("p2hitAddEnergy",hl.p2hitAddEnergy);
+		this.generator.write("p2guardAddEnergy",hl.getP2guardAddEnergy());
+		this.generator.write("p1guardAddEnergy",hl.getP1guardAddEnergy());
+		this.generator.write("p1giveEnergy",hl.p1giveEnergy);
+		this.generator.write("p2giveEnergy",hl.p2giveEnergy);
+		
+	}
+	
+	
 }

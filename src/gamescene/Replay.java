@@ -221,6 +221,7 @@ public class Replay extends GameScene {
 
 		this.fighting.processingFight(this.nowFrame, this.keyData);
 		this.frameData = this.fighting.createFrameData(this.nowFrame, this.currentRound);
+		System.out.println("current frame:"+this.frameData.currentFrameNumber);
 	}
 
 	/**

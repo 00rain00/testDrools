@@ -115,7 +115,7 @@ public class AIController extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("jjjjj");
+		
 		Logger.getAnonymousLogger().log(Level.INFO, "Start to run");
 		
 		while (isFighting) {
@@ -145,21 +145,8 @@ public class AIController extends Thread {
 			
 				
 			     
-//			   if(!this.framesData.isEmpty()) {
-//				   try {
-//				   FrameData currentFrameData = this.framesData.removeFirst();
-//				   if(currentFrameData.currentFrameNumber>1) {
-//					   System.out.println("fire rules");
-//					   CharacterData p1 = this.framesData.removeFirst().getCharacter(true);
-//					   System.out.println(p1.getState());
-//					   kSession.insert(p1);
-//					   kSession.fireAllRules();
-//				   }}catch(Exception ex) {
-//					   System.out.println(ex);
-//				   }
-//			   }
-//				  
-//				  
+			   
+				  		  
 				
 
 			   
@@ -208,26 +195,31 @@ public class AIController extends Thread {
 		if(fd != null){
 			this.framesData.addLast(fd);
 			
-			
-			  ks = KieServices.Factory.get();
-		     kContainer = ks.getKieClasspathContainer();
-		      kSession = kContainer.newKieSession("ksession-rules");
-
-		      
-		      if(fd.currentFrameNumber%5==0&&fd.currentFrameNumber>1) {
-			//System.out.println("x coordinate:"+(double)Math.abs(480.0 - fd.getCharacter(false).getCenterX())/480.0);
-
-		    	  CharacterData p1 = fd.getCharacter(true);
-		  		CharacterData p2 = fd.getCharacter(false);
-//		  		//System.out.println("setFrameData:"+p1.getAction());
-		  		kSession.insert(p1);
-	  		    kSession.insert(p2);
-//		  		
-		  		kSession.insert(msg);
-//		  		
-
-	  		kSession.fireAllRules();
-		      }
+//			
+//			  ks = KieServices.Factory.get();
+//		     kContainer = ks.getKieClasspathContainer();
+//		      kSession = kContainer.newKieSession("ksession-rules");
+//
+//		      
+//		      if(fd.currentFrameNumber%10==0&&fd.currentFrameNumber>1) {
+//			//System.out.println("x coordinate:"+(double)Math.abs(480.0 - fd.getCharacter(false).getCenterX())/480.0);
+//
+//		    	  CharacterData p1 = fd.getCharacter(true);
+//		  		CharacterData p2 = fd.getCharacter(false);
+////		  		//System.out.println("setFrameData:"+p1.getAction());
+//		  		kSession.insert(p1);
+//	  		    kSession.insert(p2);
+////		  		
+//		  		kSession.insert(msg);
+////		  		
+//
+//	  		kSession.fireAllRules();
+//	  	//	System.out.println(fd.currentFrameNumber);
+//	  		//fbot.sendMessage(msg.getNext(),channel);
+//	  //		CommentGenerate.twitchBot(msg.getNext());
+//	  	
+//	  
+//		      }
 
 			
 		}else{

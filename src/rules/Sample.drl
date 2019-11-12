@@ -12,6 +12,7 @@ no-loop
 when CharacterData(action.toString().equals("BACK_STEP"),$n:playerNumber)
 $m:Message()
 then $m.setNext( $m.getPlayerName($n)+ " steping back to keep distance");
+$m.addComments($m.getPlayerName($n)+ " steping back to keep distance");
 end
 
 rule "forjump"
@@ -20,6 +21,7 @@ no-loop
 when  CharacterData(action.toString().equals("FOR_JUMP"),$n:playerNumber)
 $m:Message()
 then  $m.setNext($m.getPlayerName($n)+" Jumping forward to shorten the distance");
+$m.addComments($m.getPlayerName($n)+" Jumping forward to shorten the distance");
 end
 rule "backjump"
 no-loop
@@ -27,14 +29,16 @@ no-loop
 when  CharacterData(action.toString().equals("BACK_JUMP"),$n:playerNumber)
 $m:Message()
 then   $m.setNext($m.getPlayerName($n)+" back jumping to keep distance");
+$m.addComments($m.getPlayerName($n)+" back jumping to keep distance");
 end
 rule "standb"
 no-loop
 when CharacterData(action.toString().equals("STAND_B"),$n:playerNumber)
 $m:Message()
 then 
-
 $m.setNext( $m.getPlayerName($n)+" Kick hit!");
+$m.addComments($m.getPlayerName($n)+" Kick hit!");
+$m.addComments("Hokusai created the Thirty-Six Views both as a response to a domestic travel boom and as part of a personal obsession with Mount Fuji.");
 end
 rule "standfa"
 
@@ -42,6 +46,8 @@ no-loop
 when  CharacterData(action.toString().equals("STAND_FA"),$n:playerNumber)
 $m:Message()
 then  $m.setNext($m.getPlayerName($n)+" Heavy puching!");
+$m.addComments($m.getPlayerName($n)+" Heavy puching!");
+$m.addComments("The Great Wave print and Fine Wind, Clear Morning, that secured Hokusai’s fame both in Japan and overseas. ");
 end
 rule "sliding kick"
 no-loop
@@ -49,16 +55,19 @@ no-loop
 when CharacterData(action.toString().equals("STAND_D_DB_BB"),$n:playerNumber)
 $m:Message()
 then  $m.setNext($m.getPlayerName($n)+" Sliding kick!");
+$m.addComments($m.getPlayerName($n)+" Sliding kick!");
 end
 rule "super1"
 when CharacterData(action.toString().equals("STAND_D_DF_FC"),$n:playerNumber)
 $m:Message()
 then $m.setNext($m.getPlayerName($n)+" Supper attack!");
+$m.addComments($m.getPlayerName($n)+" Supper attack!");
 end
 rule "strongupper"
 when CharacterData(action.toString().equals("STAND_F_D_DFB"),$n:playerNumber)
 $m:Message()
 then $m.setNext($m.getPlayerName($n)+" Strong upper hit!");
+$m.addComments($m.getPlayerName($n)+" Strong upper hit!");
 end
 
 rule "Projectileforward"
@@ -67,36 +76,44 @@ no-loop
 when CharacterData(action.toString().equals("STAND_D_DF_FB"),$n:playerNumber)
 $m:Message()
 then  $m.setNext($m.getPlayerName($n)+" Projectile fire!");
+$m.addComments($m.getPlayerName($n)+" Projectile fire!");
 end
 rule "lowhp"
 when CharacterData(hp<=30,$n:playerNumber)
 $m:Message()
 then  $m.setNext($m.getPlayerName($n)+" is in DANGER!");
+$m.addComments($m.getPlayerName($n)+" is in DANGER!");
+$m.addComments("This ukiyoe is draw by Hokusai in 1815"); 
 end
 rule "lose"
 when CharacterData(hp<=0,$n:playerNumber)
 $m:Message()
 then  $m.setNext($m.getPlayerName($n)+" LOSE....");
+$m.addComments($m.getPlayerName($n)+" LOSE....");
 end
 rule "rightcorner"
+enabled false
 when  $p:CharacterData((Math.abs(480.0 - $p.getCenterX())/480.0)>0.9,$n:playerNumber)
 $m:Message()
 then   $m.setNext($m.getPlayerName($n)+" is forced in corner!");
+$m.addComments($m.getPlayerName($n)+" is forced in corner!");
 end
 rule "leftcorner"
+enabled false
 when  $p:CharacterData((Math.abs(480.0 - $p.getCenterX())/480.0)<0.1,$n:playerNumber)
 $m:Message()
 then   $m.setNext($m.getPlayerName($n)+" is forced in corner!");
+$m.addComments($m.getPlayerName($n)+" is forced in corner!");
 end
+//rule "avoidSame"
 
 
 
 
 
 rule "fireOutput"
-
 when $m:Message(current!=next)
 then
-System.out.println($m.getNext());
+//System.out.println($m.getNext());
 $m.setCurrent($m.getNext());
 end

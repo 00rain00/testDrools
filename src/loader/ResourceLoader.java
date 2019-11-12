@@ -36,7 +36,7 @@ import manager.SoundManager;
 import setting.GameSetting;
 import setting.LaunchSetting;
 import setting.ResourceSetting;
-
+import aiinterface.testDroolsAI;
 /**
  * キャラクターの設定ファイルや画像等のリソースをロードするためのシングルトンパターンクラス．
  */
@@ -576,5 +576,17 @@ public class ResourceLoader {
 			}
 		});
 	}
+	public AIController loadBuildInAI() {
+		Logger.getAnonymousLogger().log(Level.INFO, "loadBuildInAI: " );
 
+		try {
+			
+			testDroolsAI ai = new testDroolsAI();
+
+			return new AIController(ai);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
