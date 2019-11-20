@@ -105,8 +105,12 @@ $m:Message()
 then   $m.setNext($m.getPlayerName($n)+" is forced in corner!");
 $m.addComments($m.getPlayerName($n)+" is forced in corner!");
 end
-//rule "avoidSame"
-
+//rule "comboCount"
+rule "combo"
+when CharacterData(hitCount>=3)
+$m:Message()
+then  $m.setCombo(true);
+end
 
 
 

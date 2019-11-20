@@ -28,7 +28,7 @@ public class GameSetting {
 	/**
 	 * ゲームの既定繰り返し回数を格納する配列．
 	 */
-	public static final int[] REPEAT_NUMBERS = { 1, 2, 3, 5, 10, 30, 50, 100 };
+	public static final int[] REPEAT_NUMBERS = { 1, 2, 3, 5, 10, 30, 50, 100,  200};
 
 	/**
 	 * 1ラウンドの総フレーム数．

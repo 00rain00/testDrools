@@ -30,14 +30,18 @@ import struct.ScreenData;
 import util.DebugActionData;
 import util.LogWriter;
 import util.ResourceDrawer;
+/////////////////////////////
 import comment.Message;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import comment.Fightbot;
+import comment.CommentBot;
 import comment.Highlight;
 import comment.CommentService;
 import com.cavariux.twitchirc.Chat.*;
+import com.darkprograms.speech.synthesiser.SynthesiserV2;
+import java.math.*;
 /**
  * 対戦中のシーンを扱うクラス．
  */
@@ -102,14 +106,17 @@ public class Play extends GameScene {
 	 * クラスコンストラクタ．
 	 */
 	
-	 static KieServices ks;
-	 static  KieContainer kContainer;
-	 static KieSession kSession;
-	 static Message msg;
+	 public KieServices ks;
+	 public  KieContainer kContainer;
+	 public KieSession kSession;
+	 public Message msg;
 	 static int commentLimit;
 	 public Fightbot fbot;
+	 public CommentBot cb;
 	public  Channel channel;
 	public String j;
+	public static SynthesiserV2 synthesizer = new SynthesiserV2("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
+	public ArrayList<Highlight> hlList;
 	public Play() {
 		// 以下4行の処理はgamesceneパッケージ内クラスのコンストラクタには必ず含める
 		this.gameSceneName = GameSceneName.PLAY;
@@ -123,7 +130,7 @@ public class Play extends GameScene {
 	@Override
 	public void initialize() {
 		InputManager.getInstance().setSceneName(GameSceneName.PLAY);
-
+		hlList = new ArrayList<Highlight>();
 		this.fighting = new Fighting();
 		this.fighting.initialize();
 
@@ -150,6 +157,7 @@ public class Play extends GameScene {
 			System.out.println("initialize json flag");
 			String jsonName = LogWriter.getInstance().createOutputFileName("./log/replay/", this.timeInfo);
 			LogWriter.getInstance().initJson(jsonName + ".json");
+			
 		}
 
 		GameData gameData = new GameData(this.fighting.getCharacters());
@@ -166,19 +174,35 @@ public class Play extends GameScene {
 		if (FlagSetting.enableWindow && !FlagSetting.muteFlag) {
 			SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
 		}
+		if (FlagSetting.enableComment) {
+			this.ks = KieServices.Factory.get();
+		    this.kContainer = ks.getKieClasspathContainer();
+		     this.kSession = kContainer.newKieSession("ksession-rules");
+			
+			
+		}
+		if(FlagSetting.enableTwitchChat) {
+			try {
+			String cName = "#hunteer_999";
+			System.out.println("initial bot connections :"+cName);
+			this.fbot = new Fightbot();
+			this.cb = new CommentBot();
+			fbot.connect();
+			cb.connect();
+			 channel = fbot.joinChannel(cName);
+			 cb.joinChannel(cName);
+			
+		} catch(Exception e) {
+			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
+		}
+			
+			
+			
+			
+		}
 		
 		
-//		try {
-//			String cName = "#hunteer_999";
-//			System.out.println("initial bot connections :"+cName);
-//			this.fbot = new Fightbot();
-//			
-//			fbot.connect();
-//			 channel = fbot.joinChannel(cName);
-//			
-//		} catch(Exception e) {
-//			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
-//		}
+
 	}
 	
 
@@ -236,9 +260,7 @@ public class Play extends GameScene {
 		this.keyData = new KeyData();
 		commentLimit = 50;
 		InputManager.getInstance().clear();
-		 ks = KieServices.Factory.get();
-	     kContainer = ks.getKieClasspathContainer();
-	      kSession = kContainer.newKieSession("ksession-rules");
+		 this.hlList = new ArrayList<Highlight>();
 	      msg = new Message();
 	}
 
@@ -272,65 +294,91 @@ public class Play extends GameScene {
 		this.keyData = new KeyData(InputManager.getInstance().getKeyData());
 		this.fighting.processingFight(this.nowFrame, this.keyData);
 		this.frameData = this.fighting.createFrameData(this.nowFrame, this.currentRound);
-		//generate hl data
-		Highlight hl = CommentService.setHighlight(this.frameData);  // probally return null
-			   try {
-			 
-			  //
-			 
-				   
-				   CharacterData p1 =  this.frameData.getCharacter(true);
-				   CharacterData p2 =  this.frameData.getCharacter(false);
-				   //System.out.println("p1:"+p1.getCenterX());
-				  // System.out.println("p2:"+p2.getCenterX());
-				   //System.out.println("dif;"+(double)(Math.abs(p1.getCenterX()-p2.getCenterX())-41.0)/879.0);
-			   
-			   
-			   
-			   
-			   
-			   
-			   
-				   FrameData currentFrameData = this.frameData;
-			   if(currentFrameData.currentFrameNumber>=1&currentFrameData.currentFrameNumber%1==0) {
-				//   i=i+1;
-				  // System.out.println(currentFrameData.currentFrameNumber+"::::::::");
-				   
-//				  
-//				   kSession.insert(p1);
-//				   kSession.insert(p2);
-//				   kSession.insert(msg);
+		int fn=this.frameData.currentFrameNumber;
+		String s1 = "Welcome to Fighting Ice rift.";
+		String s2 = "Player are fighting each other.";
+		String s3= "ZEN is rampaging.  ";
+		String s4 = "Victory belongs to AI!";
+		 Highlight hl = CommentService.setHighlight(this.frameData);  // probally return null
+		 hlList.add(hl);
+		 try {
+				  
+			 this.msg = CommentService.generateComment(this.frameData, 30, this.kSession,this.msg);
+			   double speed =1.0;
+			   double pitch=1.0;
+			 //wed demo
+//			   ArrayList<String> comments = new ArrayList();
+//			   
+//			   if(fn==300) {
+//				   comments.add(s1);
+//				   msg.setComments(comments);
+//				   speed=1.0;
+//				   pitch=1.0;
+//				   CommentService.text2Speech(msg, synthesizer,speed,pitch);
+//			   }
+//			   if(fn==1000) {
+//				   speed=1.5;
+//				   comments.add(s2);
+//				   msg.setComments(comments);
+//				  // msg.setComments(comments);
+//				   CommentService.text2Speech(msg, synthesizer,speed,pitch);
+//			   }
+//			   if(fn==2000) {
+//				   pitch=1.5;
+//				   comments.add(s3);
+//				   msg.setComments(comments);
+//				  // msg.setComments(comments);
+//				   CommentService.text2Speech(msg, synthesizer,speed,pitch);
+//			   }
+//			   if(fn==3000) {
+//				   speed=2.0;
+//				   pitch=2.0;
+//				   comments.add(s4);
 //				   
-//				  
-//				  
-//				  
-//				   kSession.fireAllRules();
-//			  		
-//				  
-//				   //check limit
-//				   if(commentLimit>0) {
+//				   msg.setComments(comments);
+//				   CommentService.text2Speech(msg, synthesizer,speed,pitch);
+//			   }
+			 //end wed demo
+				   //check limit
+			   
+			   
+			   
+			   if(FlagSetting.enableTwitchChat) {
+				   if(commentLimit>0) {
 //					   System.out.println("comment limit :"+commentLimit);
-//					   ArrayList<String> comments = msg.getComments();
-//				  		for(String com:comments) {
-//				  			System.out.println(com);
-//				  			commentLimit = commentLimit-1;
-//				  			fbot.sendMessage(com, channel);
-//				  		}
-//				  		msg.emptyComments();
-//				   }else {
-//					   System.out.println("over limit");
-//				   }
-//				   //nearly 30s  50 per 30s 
-//				   if(currentFrameData.currentFrameNumber>=1700) {
-//					   commentLimit = 50;
-//				   }
-//				   
+					   double rand= Math.random();
+					   int sent=0;
+							   if(rand>0.5) {
+							sent =CommentService.sendComment(msg, fbot, channel);
+							   }else {
+								   sent =CommentService.sendComment(msg,cb, channel);
+							   }
+				  		commentLimit -=sent;
+				   }
+//				   //  50 comments per 30s 
+				   if(this.frameData.currentFrameNumber>=1700) {
+					   commentLimit =50;
+				   }
+				   if(FlagSetting.enableTTS) {
+					   if(fn%500==0) {
+						   double hlScore = 0;
+						   hlScore = CommentService.calculateHlScore(hlList);
+							CommentService.text2Speech(msg, synthesizer, speed, pitch,hlScore);
+							
+					   }
+					  
+					  // this.msg.emptyComments();
+					}
 				   
-				   
-				   
-			   }}catch(Exception ex) {
-				   System.out.println(ex);
 			   }
+			  
+//			   if(this.msg.combo) {
+//				   this.msg = new Message();
+//			   }
+//			   
+			   }catch(Exception e) {
+					Logger.getAnonymousLogger().log(Level.SEVERE, e.getMessage());
+				}
 		   
 		// リレイログ吐き出し
 		if (!FlagSetting.trainingModeFlag) {

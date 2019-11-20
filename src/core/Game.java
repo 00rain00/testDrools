@@ -118,6 +118,15 @@ public class Game extends GameManager {
 			case "--err-log":
 				FlagSetting.outputErrorAndLogFlag = true;
 				break;
+			case "--comment":
+				FlagSetting.enableComment=true;
+				break;
+			case "--twitchChat":
+				FlagSetting.enableTwitchChat=true;
+				break;
+			case "--tts":
+				FlagSetting.enableTTS=true;
+				break;
 			default:
 				Logger.getAnonymousLogger().log(Level.WARNING,
 						"Arguments error: unknown format is exist. -> " + options[i] + " ?");

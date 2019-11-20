@@ -6,7 +6,13 @@ public class Message {
 	public String current;
 	public String next;
 	public ArrayList<String>comments;
-	
+	public boolean combo;
+	public boolean isCombo() {
+		return combo;
+	}
+	public void setCombo(boolean combo) {
+		this.combo = combo;
+	}
 	public ArrayList<String> getComments() {
 		return comments;
 	}

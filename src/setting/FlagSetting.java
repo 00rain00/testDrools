@@ -69,5 +69,11 @@ public class FlagSetting {
 	 * ゲームウィンドウを生成するかどうかのフラグ．
 	 */
 	public static boolean enableWindow = true;
+	
+	public static boolean enableComment = false;
+	
+	public static boolean enableTwitchChat=false;
+	
+	public static boolean enableTTS=false;
 
 }

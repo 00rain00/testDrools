@@ -7,6 +7,7 @@ import org.junit.Test;
 import fighting.Fighting;
 import struct.CharacterData;
 import fighting.Character;
+import com.darkprograms.speech.synthesiser.SynthesiserV2;
 public class CommentServiceTest {
 
 	@Before
@@ -32,6 +33,22 @@ public class CommentServiceTest {
 		Highlight hl = CommentService.setHighlight(fd);
 		assertEquals("not same",hl.getP1Damage(),300,0);
 		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void testText2Speech() {
+		try {
+		Message msg = new Message();
+		msg.addComments("ZEN use high kick");
+		msg.addComments("ZEN use low kick");
+		msg.addComments("ZEn use super kick");
+		SynthesiserV2 synthesizer = new SynthesiserV2("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
+		//CommentService.text2Speech(msg, synthesizer);
+		
+		
+		Thread.sleep(10000);
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}

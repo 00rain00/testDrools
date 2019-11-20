@@ -108,5 +108,13 @@
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/lib/TwitchIRC-all-1.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/slf4j-1.7.26/slf4j-simple-1.7.26.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/tts/java-flac-encoder-0.3.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/tts/java-flac-encoder-0.3.8-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/tts/java-google-speech-api-V2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/tts/java-google-speech-api-V2.1-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/tts/jlayer-1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/tts/jlayer-1.0.1-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/tts/json-20150729.jar"/>
+	<classpathentry kind="lib" path="C:/Users/irvine/git/testDrools/tts/json-20150729-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

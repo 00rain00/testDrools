@@ -10,20 +10,7 @@ import struct.FrameData;
 import struct.GameData;				
 import struct.Key;
 import struct.ScreenData;
-import comment.CommentGenerate;
-import comment.Message;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.StatelessKieSession;
 
-import com.cavariux.twitchirc.Chat.Channel;
-
-import enumerate.Action;
-import struct.AttackData;
-import struct.CharacterData;
-import comment.Fightbot;
-import com.cavariux.twitchirc.Chat.*;
 /**
  * AIのスレッドや処理を管理するクラス．
  */
@@ -80,14 +67,7 @@ public class AIController extends Thread {
 	public AIController(AIInterface ai) {
 		this.ai = ai;
 	}
-	 static KieServices ks;
-	 static  KieContainer kContainer;
-	 static KieSession kSession;
-	 static Message msg;
-	 public Fightbot fbot;
-	public  Channel channel;
-	public CommentGenerate cg;
-	static int i =0;
+	 
 	/**
 	 * 引数で与えられたパラメータをセットし，初期化を行う．
 	 *
@@ -109,18 +89,7 @@ public class AIController extends Thread {
 		this.clear();
 		this.isFighting = true;
 		this.ai.initialize(gameData, playerNumber);
-//		msg = new Message();
-//		this.fbot = new Fightbot();
-//		String cName = "#hunteer_999";
-//		
-//		try {
-//			System.out.println("initial bot connections :"+cName);
-//			fbot.connect();
-//			 channel = fbot.joinChannel(cName);
-//			
-//		} catch(Exception e) {
-//			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
-//		}
+
 
 			
 
@@ -154,18 +123,7 @@ public class AIController extends Thread {
 			this.ai.processing();
 			setInput(this.ai.input());
 			ThreadController.getInstance().notifyEndProcess(this.playerNumber);
-			
-			
-				
-			     
-			   
-				  		  
-				
-
-			   
-
-
-			
+						
 		}
 
 	}
@@ -208,31 +166,7 @@ public class AIController extends Thread {
 		if(fd != null){
 			this.framesData.addLast(fd);
 			
-//			
-//			  ks = KieServices.Factory.get();
-//		     kContainer = ks.getKieClasspathContainer();
-//		      kSession = kContainer.newKieSession("ksession-rules");
-//
-//		      
-//		      if(fd.currentFrameNumber%10==0&&fd.currentFrameNumber>1) {
-//			//System.out.println("x coordinate:"+(double)Math.abs(480.0 - fd.getCharacter(false).getCenterX())/480.0);
-//
-//		    	  CharacterData p1 = fd.getCharacter(true);
-//		  		CharacterData p2 = fd.getCharacter(false);
-////		  		//System.out.println("setFrameData:"+p1.getAction());
-//		  		kSession.insert(p1);
-//	  		    kSession.insert(p2);
-////		  		
-//		  		kSession.insert(msg);
-////		  		
-//
-//	  		kSession.fireAllRules();
-//	  	//	System.out.println(fd.currentFrameNumber);
-//	  		//fbot.sendMessage(msg.getNext(),channel);
-//	  //		CommentGenerate.twitchBot(msg.getNext());
-//	  	
-//	  
-//		      }
+
 
 			
 		}else{
