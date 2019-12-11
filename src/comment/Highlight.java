@@ -3,12 +3,11 @@ package comment;
 public class Highlight {
 	public double hlScore;
 	//public double hlScoreK;
-	public double damageScore;//re
+	public double damageScore;//hp dif
 	public double difDis; // distance to each other
 	public double time;
 	public double actionScore;
 	public int frameNumber;
-	
 	public double p1Position;
 	public int p2startAddEnergy;
 	public int p1hitAddEnergy;

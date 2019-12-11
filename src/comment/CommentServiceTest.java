@@ -52,5 +52,25 @@ public class CommentServiceTest {
 			e.printStackTrace();
 		}
 	}
+	@Test
+	public void testTestMatlab() {
+		try {
+		CommentService.testMatlab();
+		
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void testTTS() {
+		try {
+			//CommentService.testTTS();
+			Thread.sleep(10000);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
 
 }

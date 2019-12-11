@@ -14,12 +14,15 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import comment.Message;
+import ice_agent.TTSBridge;
 
 import com.cavariux.twitchirc.Chat.Channel;
 import com.cavariux.twitchirc.Core.TwitchBot;
 import com.darkprograms.speech.synthesiser.SynthesiserV2;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import com.mathworks.engine.*;
+
 public class CommentService {
 	static int oriHp = 400;
 	static org.slf4j.Logger logger = LoggerFactory.getLogger(CommentService.class);
@@ -33,12 +36,13 @@ public class CommentService {
 		try {
 		if(fd.currentFrameNumber>=1) {
 			
-			//p1
+			
 			hl.setFrameNumber(fd.getFramesNumber());
 			CharacterData p1 = fd.getCharacter(true);
 			CharacterData p2 = fd.getCharacter(false);
 			hl.setP1Damage(oriHp-p1.getHp());
 			hl.setP2Damage(oriHp-p2.getHp());
+			hl.setDamageScore((double)Math.abs(p1.getHp()-p2.getHp()));
 			hl.setP1Hits(p1.getHitCount());
 			hl.setP2Hits(p2.getHitCount());
 			hl.setP1Energy(p1.getEnergy()/300.0);
@@ -48,7 +52,7 @@ public class CommentService {
 			hl.setP1Position(d1);
 			hl.setP2Position(d2);
 			hl.setDifDis((double)Math.abs((Math.abs(p1.getCenterX()-p2.getCenterX())-41.0))/879.0);//normalize to 0-1
-			//p2
+			
 			hl.setP1giveEnergy(p1.getAttack().getGiveEnergy());
 			hl.setP2giveEnergy(p2.getAttack().getGiveEnergy());
 			hl.setP1guardAddEnergy(p1.getAttack().getGuardAddEnergy());
@@ -68,7 +72,11 @@ public class CommentService {
 		}
 		return hl;
 	}
-	public static double calculateHlScore(ArrayList<Highlight> hlList) {
+	public static double prepareHLData(ArrayList<Highlight> hlList) {
+		/*
+		 * [][]
+		 * hpdif disdif actionScore
+		*/
 		double result =0;
 		if(hlList.size()==0||hlList==null) {
 			return 0;
@@ -82,11 +90,7 @@ public class CommentService {
 			 }else {
 				 return 3;
 			 }
-			
-			
-			
-
-			}catch(Exception e) {
+						}catch(Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		
@@ -136,7 +140,6 @@ public class CommentService {
 		}
 		logger.info(text);
 		logger.info("comment size:"+comments.size());
-		String a = text;
 		switch((int)hlScore) {
 		case 1:
 			synthesizer.setPitch(1.0);
@@ -199,4 +202,64 @@ public class CommentService {
 		return totalSentComment;
 	}
 	
+	public static void testMatlab()throws Exception {
+		MatlabEngine eng = MatlabEngine.startMatlab();
+			eng.eval("cd C:\\Users\\irvine\\git\\hl");
+			int c [][]= new int[2][2];
+			for (int x = 0; x < 2; x++) 
+			{
+			    for (int y = 0; y < 2; y++) 
+			    {
+			        c[x][y] = (int)(Math.random() * 100) + 1;
+			    }
+			}
+			
+			
+		double[] roots=eng.feval("testJava",c);
+		//System.out.println(results);
+
+        for (double e: roots) {
+            System.out.println(e);
+        }
+		
+        eng.close();
+        
+	}
+	public static void GTTS(Message msg,float speed,float pitch,double hlScore) {
+		
+		
+		Thread thread = new Thread(() -> {
+			try {
+				//1f 2f
+				TTSBridge tts = new TTSBridge();
+				ArrayList<String> comments  = msg.getComments();
+				String text = "";
+				for (String com : comments) {
+					text = text.concat(com).concat(".");
+				}
+				
+				tts.voice_name = "ja-JP-Wavenet-D";
+				tts.language_code="ja-JP";
+				tts.rate=speed;
+				tts.pitch=pitch;
+				// 说话
+				tts.speak(text);
+				
+				System.out.println("Successfully got back synthesizer data,pitch:"+pitch+"speed:"+speed);
+				
+			} catch (Exception e) {
+				
+				e.printStackTrace(); //Print the exception ( we want to know , not hide below our finger , like many developers do...)
+				
+			}
+		});
+		
+		//We don't want the application to terminate before this Thread terminates
+		thread.setDaemon(false);
+		
+		//Start the Thread
+		thread.start();
+		
+		
+	}
 }

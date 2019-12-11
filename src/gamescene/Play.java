@@ -359,19 +359,18 @@ public class Play extends GameScene {
 				   if(this.frameData.currentFrameNumber>=1700) {
 					   commentLimit =50;
 				   }
-				   if(FlagSetting.enableTTS) {
-					   if(fn%500==0) {
-						   double hlScore = 0;
-						   hlScore = CommentService.calculateHlScore(hlList);
-							CommentService.text2Speech(msg, synthesizer, speed, pitch,hlScore);
-							
-					   }
-					  
-					  // this.msg.emptyComments();
-					}
+				   
 				   
 			   }
-			  
+			   if(FlagSetting.enableTTS) {
+				   if(fn%300==0) {
+					  
+						CommentService.GTTS(msg, 1.0f, 1.0f, 0);
+						
+				   }
+				  
+				  // this.msg.emptyComments();
+				}
 //			   if(this.msg.combo) {
 //				   this.msg = new Message();
 //			   }
