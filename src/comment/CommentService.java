@@ -4,6 +4,13 @@ import struct.CharacterData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,14 +29,175 @@ import com.darkprograms.speech.synthesiser.SynthesiserV2;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import com.mathworks.engine.*;
-
+import java.util.concurrent.*;
 public class CommentService {
 	static int oriHp = 400;
 	static org.slf4j.Logger logger = LoggerFactory.getLogger(CommentService.class);
 	 static KieServices ks;
 	 static  KieContainer kContainer;
 	 static KieSession kSession;
-	 
+	static Set<String>commentSet;
+	static Map<String,String>skillMap ;
+			static {
+				skillMap=new HashMap<>();
+				skillMap.put("STAND_D_DB_BA", "Flying crop");
+//				skillMap.put("BACK_STEP", "Back step");
+//				skillMap.put("FORWARD_WALK", "Step forward");
+//				skillMap.put("DASH", "Lean forward");
+				skillMap.put("STAND_GUARD", "Guard");
+				skillMap.put("CROUCH_GUARD", "Guard");
+				skillMap.put("THROW_A", "Throw");
+				skillMap.put("THROW_B", "Great Throw");
+				skillMap.put("STAND_A", "Punch");
+				skillMap.put("STAND_B", "Kick");
+				skillMap.put("CROUCH_A", "Low Punch");
+				skillMap.put("CROUCH_B", "Low Kick");
+				skillMap.put("STAND_FA", "Heavy Punch");
+				skillMap.put("STAND_FB", "Heavy Kick");
+				skillMap.put("CROUCH_FA", "Low Heavy Punch");
+				skillMap.put("CROUCH_FB", "Low Heavy Kick");
+				skillMap.put("STAND_D_DF_FA", "Hadouken");
+				skillMap.put("STAND_D_DF_FB", "Super Hadouken");	
+				skillMap.put("STAND_F_D_DFA", "Uppercut");
+				skillMap.put("STAND_F_D_DFB", "Super Uppercut");
+				skillMap.put("STAND_D_DB_BB", "Slide Kick");
+				skillMap.put("STAND_D_DF_FC", "Ultimate Hadouken");	
+			}
+	
+			static String[]air = {
+					"Important huge hit over there and sending he to the atmosphere.",
+					"Exactly important huge ! Over there sending @ into the atmosphere"
+					};
+					static String[]normal = {
+							" playing very re-actively, and waiting to see what will do.",
+							"A miracle comeback.",
+							"@ is ridiculous.",
+							"The genius @ surviving.",
+							"punishing properly.",
+							"@ not sure what to do, @ is capitalizing it.",
+							"see what @ is doing ."
+							
+					};
+					static String[]end= {
+							"The big counter hit confirm this round.",
+							"It gives the moment to punch and @ takes a turn.",
+							"@ is going to get in with !  and just like that finish the game.",
+							"@ takes what he can get and go for the reset at the end.",
+							"A ! takes the round here.",
+							"@ able to confirm ! with the ! enough to take the round.",
+							"You see ,that was a checkmate senario.",
+							"1,2,3 strike. you are out.",
+							"Nice predict of the hit and get a counter hit.",
+							"Wow what kind of mad men is he",
+							"what a beautiful ! to beat up the @ .",
+							"Incredible round for @ ."
+					};
+					static String[]distance= {
+							"he is trying to slow this down and find the range.",
+							"@ backs up in the corner instead of choosing go forward.",
+							"The defence is a little shaky here.",
+							"@ packing a few try but not able to catch the oppoent.",
+							"@ decides to spend some !  to maintain that distance.",
+							"@ try to keep the space .",
+							"a lot of back up from @.",
+							"not as effective.",
+							"He just act so flex.",
+							"A beautiful ! he get off there.",
+							"@ can have a little bit of comeback now.",
+							"@ try to switch up a strategy here.",
+							"@ tries to slow down and find the range."
+					};
+					static String[]corner= {
+							" It is so important to trap your opponent in the corner they have no more space to walk backward."	,
+							" really get in there, nice interrupt and throw into the corner.",
+							"look at this the life deficit so high right now.",
+							"@ caging the oppoent in that following a branch of !.",
+							"@ stood up and got a cause by the ! .",
+							"@ is in trouble here in the corner now.",
+							"@ will stick out the ! with other actions.",
+							"This corner presure is very cool.",
+							" never seen that before",
+							"@ tucked the opponent very quick",
+							"What a ! under @, he manage to escape the corner.",
+							"So important to trap your opponent into the corner.",
+							"They have no more space to walk backward ",
+							"@ do ! to switch the side."
+							
+					};
+					static String[]ult= {
+							" triggered the ! to confirm another critical arts,  take the game with that beautiful confirms for that max damage",
+							"What a !,following the ! huge damage after that and give @ the moment to  a knock out.",
+							"@ is going to get in with !  and just like that finish the game.",
+							"@ able to confirm ! with the ! enough to take the round.",
+							"Here is the ! into the activation .",
+							"look at the presure now.",
+							"such a good ! .",
+							"one big hit can lead to a lot of damage.",
+							"Ohh !, @ gonna to get a confirm of !.",
+							"It is the damage as @ gets the hits.",
+							"big damage @ optimal there.",
+							"huge damage already lost.",
+							"That is @, playing out of his mind.",
+							"One hit can lead directly into critical act from @ .",
+							"A ton of damage.",
+							"Any time  get hit,  lose all of that amount.",
+							"The big counter hit confirm into the ! ."
+					};
+					static String[] hp = {
+						"It is pressure time now.",
+						"@ got to do something right now.",
+						"@ need to be very careful.",
+						"God, @ just walk in so many attacks and already down half of the life.",
+					"@ is losing the momentum .",
+					"@ never stop, it really wants to get in there at all times.",
+					"Drain a lot of life.",
+					"He finds of hit, very dangerous for @ .",
+					"Once @ get in, it will overwhelm you."
+					};
+					static String[] jump= {
+							" @ jumps forward and turns around and nearly immediately escaped.",
+							"Here we go.",
+							"@ trying to move in the air. ",
+							"@ plays very quick.",
+							"! come down too fast, the regular ! cannot be hit.",
+							"@ goes for the air because @ wants to jump in ."
+					};
+					static String[]heavy= {
+							"! huge damage output from @.",
+							"! works so well because it  give @ the advantage afterwards",
+							"@ stand out followed ! a big damage now.",
+							"The offence is overwhelming.",
+							"@ try to ! but a little too late while end up in the front attack.",
+							"Great start of the @ with the ! .",
+							"@ could get more damage.",
+							"@ is controling the around but if @ can find a way get in.",
+							"@ get in there with a ! right to the face.",
+							"! is really hard to answer.",
+							"It is going to be  a lot of ! .",
+							"Immediately active the ! ."
+					};
+					static String[]combo= {
+							"Very nice ! and still able to combo.",
+							"@ add a stun, a follow of combo , a ton of damage here.",
+							"@ takes what he can get and go for the reset at the end.",
+							"The offence is overwhelming.",
+							"@ a dash up and finally hit it and going to give a combo. Use all the resource to guarantee that takes this round.",
+							"a big combo and follow up ! .",
+							"@ rolled over and make the lead of big damage and pressure.",
+							"Wow , a make up of ! and ! right there.",
+							" see that @ use ! a lot to get through and combo into the opponent.",
+							"There is no remorse and as soon as @ found an opening."
+					};
+					static String[]block= {
+							" @ blocking but no punish.",
+							"That is a very popular defence. ",
+							"@ is patient defense now.",
+							"incrediable awareness and reaction on that one.",
+							"Immediately active the ! ."
+					};
+					
+					
+	
 	public static Highlight setHighlight(FrameData fd) {
 		
 		Highlight hl = new Highlight();
@@ -42,7 +210,7 @@ public class CommentService {
 			CharacterData p2 = fd.getCharacter(false);
 			hl.setP1Damage(oriHp-p1.getHp());
 			hl.setP2Damage(oriHp-p2.getHp());
-			hl.setDamageScore((double)Math.abs(p1.getHp()-p2.getHp()));
+			hl.setHpdif(Math.abs(p1.getHp()-p2.getHp()));
 			hl.setP1Hits(p1.getHitCount());
 			hl.setP2Hits(p2.getHitCount());
 			hl.setP1Energy(p1.getEnergy()/300.0);
@@ -72,48 +240,89 @@ public class CommentService {
 		}
 		return hl;
 	}
-	public static double prepareHLData(ArrayList<Highlight> hlList) {
+	public static double[][] prepareHLData(ArrayList<Highlight> hlList) {
 		/*
 		 * [][]
-		 * hpdif disdif actionScore
+		 * hpdif disdif 1hitEn 1guardEn 1GiveEn 1hitCount 2hitEn 2guardEn 2GiveEn  2hitcount
 		*/
-		double result =0;
-		if(hlList.size()==0||hlList==null) {
-			return 0;
+		LinkedHashSet<Highlight>hlSet = new LinkedHashSet<Highlight>();
+		for (Highlight hl :hlList) {
+			hlSet.add(hl);
 		}
+		
+		if(hlList.size()==0||hlList==null) {
+			return null;
+		}
+		
+		int size = hlSet.size();
+		double[][] Mhl=new double [size][10];
 		try {
-			int size = hlList.size();
-			 if(size<=1200) {
-				 return 1;
-			 }else if(size<=2400) {
-				 return 2;
-			 }else {
-				 return 3;
-			 }
-						}catch(Exception e) {
+			Iterator<Highlight> itr = hlSet.iterator();
+			int i =0;
+		while(itr.hasNext()) {
+				Highlight hl = itr.next();
+				
+				for (int j =0;j<10;j++) {
+					switch (j) {
+					case 0:
+						Mhl[i][j]=hl.gethpdif();
+						break;
+					case 1:
+						Mhl[i][j]=hl.getDifDis();
+						break;
+					case 2:
+						Mhl[i][j]=hl.getP1hitAddEnergy();
+						break;
+					case 3:
+						Mhl[i][j]=hl.getP1guardAddEnergy();
+						break;
+					case 4:
+						Mhl[i][j]=hl.getP1giveEnergy();
+						break;
+					case 5:
+						Mhl[i][j]=hl.getP1Hits();
+						break;
+					case 6:
+						Mhl[i][j]=hl.getP2hitAddEnergy();
+						break;
+					case 7:
+						Mhl[i][j]=hl.getP2guardAddEnergy();
+						break;
+					case 8:
+						Mhl[i][j]=hl.getP2giveEnergy();
+						break;
+					case 9:
+						Mhl[i][j]=hl.getP2Hits();
+						break;
+					}
+						
+				}
+				i = i+1;
+		}
+			
+				}catch(Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		
 		
 		
+		return Mhl;
 		
-		return result;
 	}
-	
-	
-	
-	
-	
 	
 	public static Message generateComment(FrameData fd,int frequence,KieSession ks,Message msg) {
 		try {
 		
 		CharacterData p1 =  fd.getCharacter(true);
-		  CharacterData p2 =  fd.getCharacter(false);
+		CharacterData p2 =  fd.getCharacter(false);
 		int currentFrame = fd.currentFrameNumber;
 		if(currentFrame>=1) {
+			double difdis=(double)Math.abs((Math.abs(p1.getCenterX()-p2.getCenterX())-41.0))/879.0;//normalize to 0-1
+			double d1 = 1.0 - ((double)Math.abs(480.0 - p1.getCenterX())/480.0); //0->left corner 1-> right corner
+			double d2 = 1.0 - ((double)Math.abs(480.0 - p2.getCenterX())/480.0);
+			
 			if(currentFrame%frequence ==0) {
-				  ks.insert(p1);
+				   ks.insert(p1);
 				   ks.insert(p2);
 				   ks.insert(msg);
 				  
@@ -121,11 +330,86 @@ public class CommentService {
 			  		
 				
 			}else {
-				//logger.info("ignor frame "+currentFrame);
+				
+			}
+			String action = getActionRealName(msg.getAction());
+			String playerName = msg.getPlayerName();
+			//jifei
+//			if((msg.getOffence()==1||msg.getOffence()==0)&msg.getState()=="air") {
+//				String text =air[getRandomNumber(air.length)];
+//				msg.addComments(matchTemplate(text,action,playerName));
+//				
+//			}
+			//normal
+			if(msg.getOffence()==-1) {
+				String text =normal[getRandomNumber(normal.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//distance
+			if(difdis>=0.5) {
+				String text =distance[getRandomNumber(distance.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//corner
+			if(msg.isCorner()&&difdis<=0.4) {
+				String text =corner[getRandomNumber(corner.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//ult
+			if(msg.isUlt()) {
+				String text =ult[getRandomNumber(ult.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//jump
+			if(msg.isJump()) {
+				String text =jump[getRandomNumber(jump.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//hpDangerous
+			if(msg.isHp()) {
+				String text =hp[getRandomNumber(hp.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//heavy
+			if(msg.isHeavy()) {
+				String text =heavy[getRandomNumber(heavy.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//end
+			if(msg.isEnd()) {
+				String text =end[getRandomNumber(end.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//conbo
+			if(msg.isCombo()) {
+				String text =combo[getRandomNumber(combo.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
+			//block
+			if(msg.isBlock()) {
+				String text =block[getRandomNumber(block.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
 			}
 			
 			
 		}
+		
+		
+		
+		
+		
+		
+		
 		
 		}catch(Exception e) {
 			logger.error(e.getMessage(),e);
@@ -185,14 +469,12 @@ public class CommentService {
 		thread.start();
 	}
 	
-	public static int sendComment(Message msg,TwitchBot bot, Channel ch) {
-		if(msg==null||bot==null||ch==null) {
-			return 0;
-		}
-		ArrayList<String> comments = msg.getComments();
+	public static int sendComment(Set<String> comments,TwitchBot bot, Channel ch) {
+		
 		int totalSentComment = comments.size();
 		try {
 		for (String com :comments) {
+			//System.out.println(com);
 			bot.sendMessage(com, ch);
 		}
 		
@@ -202,50 +484,43 @@ public class CommentService {
 		return totalSentComment;
 	}
 	
-	public static void testMatlab()throws Exception {
-		MatlabEngine eng = MatlabEngine.startMatlab();
-			eng.eval("cd C:\\Users\\irvine\\git\\hl");
-			int c [][]= new int[2][2];
-			for (int x = 0; x < 2; x++) 
-			{
-			    for (int y = 0; y < 2; y++) 
-			    {
-			        c[x][y] = (int)(Math.random() * 100) + 1;
-			    }
-			}
+	public static double evaluateHl(MatlabEngine eng,double[][]matrix)throws Exception {
+		double hlScore=0;
+		eng.eval("cd C:\\Users\\irvine\\git\\hl");
+		//printMatrix(matrix);
 			
-			
-		double[] roots=eng.feval("testJava",c);
-		//System.out.println(results);
-
-        for (double e: roots) {
-            System.out.println(e);
-        }
+		hlScore=eng.feval("testJava",matrix);
 		
-        eng.close();
+        return hlScore;
         
 	}
-	public static void GTTS(Message msg,float speed,float pitch,double hlScore) {
+	public static void GTTS(Set<String> comments,boolean hlFlag) {
 		
 		
 		Thread thread = new Thread(() -> {
 			try {
 				//1f 2f
 				TTSBridge tts = new TTSBridge();
-				ArrayList<String> comments  = msg.getComments();
+				tts.voice_name = "en-GB-Wavenet-B";
+				tts.language_code="en-GB";
+				tts.rate=1f;
+				tts.pitch=1f;
+				if(hlFlag) {
+					tts.rate=1.5f;
+					tts.pitch=1.5f;
+					tts.gain=2f;
+				}
+				
 				String text = "";
 				for (String com : comments) {
 					text = text.concat(com).concat(".");
 				}
 				
-				tts.voice_name = "ja-JP-Wavenet-D";
-				tts.language_code="ja-JP";
-				tts.rate=speed;
-				tts.pitch=pitch;
+				
 				// 说话
 				tts.speak(text);
 				
-				System.out.println("Successfully got back synthesizer data,pitch:"+pitch+"speed:"+speed);
+				//System.out.println("Successfully got back synthesizer data,pitch:"+pitch+"speed:"+speed);
 				
 			} catch (Exception e) {
 				
@@ -262,4 +537,55 @@ public class CommentService {
 		
 		
 	}
+	public static void printMatrix(double[][]m) {
+		
+	        for(double[] row : m) {
+	        	 for (double i : row) {
+	                 System.out.print(i);
+	                 System.out.print("\t");
+	             }
+	             
+	        }
+	}
+	public static int getRandomNumber(int range) {
+		Random random = new Random();
+		return random.nextInt(range);
+	}
+	public static String getActionRealName(String skillCode) {
+		return skillMap.getOrDefault(skillCode, "attack");
+	}
+	public static Set deleteRepeatComments(ArrayList<String> comments,int size) {
+		//shink size
+		int difSize = comments.size()-size;
+		if(difSize>0) {
+			for(int i = difSize;i>0;i--) {
+				comments.remove(i);
+			}
+		}
+		Set<String> commentSet = new HashSet<>();
+		
+		try {
+			for(String comment : comments) {
+				commentSet.add(comment);
+			}
+			
+			
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return commentSet;
+		
+		
+	}
+	public static String matchTemplate(String temp,String action, String playerName) {
+		
+		String c = temp.replace("@", playerName);
+		
+		
+		String a = c.replace("!", action);
+		return a;
+	}
+	
 }

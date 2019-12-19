@@ -3,7 +3,7 @@ package comment;
 public class Highlight {
 	public double hlScore;
 	//public double hlScoreK;
-	public double damageScore;//hp dif
+	public int hpdif;//hp dif
 	public double difDis; // distance to each other
 	public double time;
 	public double actionScore;
@@ -28,7 +28,7 @@ public class Highlight {
 	public Highlight() {
 		super();
 		this.hlScore = hlScore;
-		this.damageScore = damageScore;
+		this.hpdif = hpdif;
 		this.difDis = difDis;
 		this.time = time;
 		this.actionScore = actionScore;
@@ -76,13 +76,13 @@ public class Highlight {
 	public void setP2startAddEnergy(int p2startAddEnergy) {
 		this.p2startAddEnergy = p2startAddEnergy;
 	}
-	public double getP1hitAddEnergy() {
+	public int getP1hitAddEnergy() {
 		return p1hitAddEnergy;
 	}
 	public void setP1hitAddEnergy(int p1hitAddEnergy) {
 		this.p1hitAddEnergy = p1hitAddEnergy;
 	}
-	public double getP2hitAddEnergy() {
+	public int getP2hitAddEnergy() {
 		return p2hitAddEnergy;
 	}
 	public void setP2hitAddEnergy(int p2hitAddEnergy) {
@@ -100,13 +100,13 @@ public class Highlight {
 	public void setP2guardAddEnergy(int p2guardAddEnergy) {
 		this.p2guardAddEnergy = p2guardAddEnergy;
 	}
-	public double getP1giveEnergy() {
+	public int getP1giveEnergy() {
 		return p1giveEnergy;
 	}
 	public void setP1giveEnergy(int p1giveEnergy) {
 		this.p1giveEnergy = p1giveEnergy;
 	}
-	public double getP2giveEnergy() {
+	public int getP2giveEnergy() {
 		return p2giveEnergy;
 	}
 	public void setP2giveEnergy(int p2giveEnergy) {
@@ -120,11 +120,11 @@ public class Highlight {
 	public void setHlScore(double hlScore) {
 		this.hlScore = hlScore;
 	}
-	public double getDamageScore() {
-		return damageScore;
+	public int gethpdif() {
+		return hpdif;
 	}
-	public void setDamageScore(double damageScore) {
-		this.damageScore = damageScore;
+	public void setHpdif(int hpdif) {
+		this.hpdif = hpdif;
 	}
 	public double getDifDis() {
 		return difDis;
@@ -175,13 +175,13 @@ public class Highlight {
 	public void setP2Energy(double p2Energy) {
 		this.p2Energy = p2Energy;
 	}
-	public double getP1Hits() {
+	public int getP1Hits() {
 		return p1Hits;
 	}
 	public void setP1Hits(int p1Hits) {
 		this.p1Hits = p1Hits;
 	}
-	public double getP2Hits() {
+	public int getP2Hits() {
 		return p2Hits;
 	}
 	public void setP2Hits(int p2Hits) {

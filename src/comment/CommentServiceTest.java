@@ -1,6 +1,10 @@
 package comment;
 
 import static org.junit.Assert.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import struct.FrameData;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,17 +58,20 @@ public class CommentServiceTest {
 	}
 	@Test
 	public void testTestMatlab() {
-		try {
-		CommentService.testMatlab();
-		
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+//		try {
+//		CommentService.testMatlab();
+//		
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
 	}
 	@Test
 	public void testTTS() {
 		try {
-			//CommentService.testTTS();
+			Set<String>comments = new HashSet<String>();
+			comments.add("Exactly huge attack Over there sending ZEN to the asmosphere!");
+			boolean hlFlag = true;
+			CommentService.GTTS(comments, hlFlag);
 			Thread.sleep(10000);
 		}catch(Exception e) {
 			e.printStackTrace();

@@ -535,7 +535,7 @@ public class LogWriter {
 		this.generator.write("p1HitCount",hl.p1Hits);
 		this.generator.write("p2HitCount",hl.p2Hits);
 		this.generator.write("IshiScore",hl.hlScore);
-		this.generator.write("damageScore",hl.damageScore);
+		this.generator.write("hpdif",hl.hpdif);
 		this.generator.write("p1Position",hl.p1Position);
 		this.generator.write("p2Position",hl.p2Position);
 		this.generator.write("p2StartAddEnergy",hl.p2startAddEnergy);

@@ -121,11 +121,14 @@ public class Game extends GameManager {
 			case "--comment":
 				FlagSetting.enableComment=true;
 				break;
-			case "--twitchChat":
+			case "--twitch":
 				FlagSetting.enableTwitchChat=true;
 				break;
 			case "--tts":
 				FlagSetting.enableTTS=true;
+				break;
+			case "--ml":
+				FlagSetting.enableMatlab=true;
 				break;
 			default:
 				Logger.getAnonymousLogger().log(Level.WARNING,

@@ -6,117 +6,118 @@ import comment.Message
 import java.lang.Math
 
 
-rule "backstep"
-no-loop
+rule "p1"
+when 
+$p1:CharacterData($p1.playerNumber==true,$p1.isHitConfirm()==true)
 
-when CharacterData(action.toString().equals("BACK_STEP"),$n:playerNumber)
 $m:Message()
-then $m.setNext( $m.getPlayerName($n)+ " steping back to keep distance");
-$m.addComments($m.getPlayerName($n)+ " steping back to keep distance");
+then   
+$m.setOffence(1);
+
 end
 
+rule "p2"
+
+when 
+$p1:CharacterData($p1.playerNumber==false,$p1.isHitConfirm()==true)
+
+$m:Message()
+then   
+$m.setOffence(0);
+
+end
+
+rule "air"
+
+when 
+$p1:CharacterData($p1.getState().toString().equals("AIR"))
+
+$m:Message()
+
+then   
+$m.setState("air");
+
+end
+
+rule "corner"
+when
+$p1:CharacterData((Math.abs(480.0 - $p1.getCenterX())/480.0)>0.9||(Math.abs(480.0 - $p1.getCenterX())/480.0)<0.1)
+$m:Message()
+then
+//System.out.println("corner");
+$m.setCorner(true);
+end
+
+rule "relativeDistance"
+when
+$p1:CharacterData($p1.playerNumber==true)
+$p2:CharacterData($p2.playerNumber==false)
+then
+end
+rule "ult"
+when CharacterData(hitCount>=1,action.toString().equals("STAND_D_DF_FA")||action.toString().equals("STAND_D_DF_FB")||action.toString().equals("STAND_F_D_DFA")||action.toString().equals("STAND_F_D_DFB")||action.toString().equals("STAND_D_DF_FC")||action.toString().equals("STAND_D_DB_BB"),$n:playerNumber,$action:action.toString())
+
+$m:Message()  
+then 
+$m.setAction($action);
+$m.setPlayerName($n);
+$m.setUlt(true);
+end
+rule "lowhp"
+when CharacterData(hp<=30,$n:playerNumber,$action:action.toString())
+$m:Message()
+then  
+$m.setHp(true);
+$m.setPlayerName($n);
+$m.setAction($action);
+end
 rule "forjump"
 no-loop
 
-when  CharacterData(action.toString().equals("FOR_JUMP"),$n:playerNumber)
+when  CharacterData(action.toString().equals("FOR_JUMP")||action.toString().equals("BACK_JUMP"),$n:playerNumber,$action:action.toString())
 $m:Message()
-then  $m.setNext($m.getPlayerName($n)+" Jumping forward to shorten the distance");
-$m.addComments($m.getPlayerName($n)+" Jumping forward to shorten the distance");
-end
-rule "backjump"
-no-loop
- 
-when  CharacterData(action.toString().equals("BACK_JUMP"),$n:playerNumber)
-$m:Message()
-then   $m.setNext($m.getPlayerName($n)+" back jumping to keep distance");
-$m.addComments($m.getPlayerName($n)+" back jumping to keep distance");
-end
-rule "standb"
-no-loop
-when CharacterData(action.toString().equals("STAND_B"),$n:playerNumber)
-$m:Message()
-then 
-$m.setNext( $m.getPlayerName($n)+" Kick hit!");
-$m.addComments($m.getPlayerName($n)+" Kick hit!");
-
-end
-rule "standfa"
-
-no-loop
-when  CharacterData(action.toString().equals("STAND_FA"),$n:playerNumber)
-$m:Message()
-then  $m.setNext($m.getPlayerName($n)+" Heavy puching!");
-$m.addComments($m.getPlayerName($n)+" Heavy puching!");
-
-end
-rule "sliding kick"
-no-loop
-
-when CharacterData(action.toString().equals("STAND_D_DB_BB"),$n:playerNumber)
-$m:Message()
-then  $m.setNext($m.getPlayerName($n)+" Sliding kick!");
-$m.addComments($m.getPlayerName($n)+" Sliding kick!");
-end
-rule "super1"
-when CharacterData(action.toString().equals("STAND_D_DF_FC"),$n:playerNumber)
-$m:Message()
-then $m.setNext($m.getPlayerName($n)+" Supper attack!");
-$m.addComments($m.getPlayerName($n)+" Supper attack!");
-end
-rule "strongupper"
-when CharacterData(action.toString().equals("STAND_F_D_DFB"),$n:playerNumber)
-$m:Message()
-then $m.setNext($m.getPlayerName($n)+" Strong upper hit!");
-$m.addComments($m.getPlayerName($n)+" Strong upper hit!");
+then  
+$m.setJump(true);
+$m.setPlayerName($n);
+$m.setAction($action);
 end
 
-rule "Projectileforward"
-no-loop
-
-when CharacterData(action.toString().equals("STAND_D_DF_FB"),$n:playerNumber)
+rule "heavy"
+when  CharacterData(hitCount>=1,action.toString().equals("STAND_FA")||action.toString().equals("CROUCH_FA")||action.toString().equals("STAND_FB")||action.toString().equals("CROUCH_FB"),$n:playerNumber,$action:action.toString())
 $m:Message()
-then  $m.setNext($m.getPlayerName($n)+" Projectile fire!");
-$m.addComments($m.getPlayerName($n)+" Projectile fire!");
+then  
+$m.setHeavy(true);
+$m.setPlayerName($n);
+$m.setAction($action);
 end
-rule "lowhp"
-when CharacterData(hp<=30,$n:playerNumber)
-$m:Message()
-then  $m.setNext($m.getPlayerName($n)+" is in DANGER!");
-$m.addComments($m.getPlayerName($n)+" is in DANGER!");
 
-end
 rule "lose"
-when CharacterData(hp<=0,$n:playerNumber)
+when CharacterData(hp<=0)
+$p1:CharacterData(hp>0,$n:playerNumber,$action:action.toString())
 $m:Message()
-then  $m.setNext($m.getPlayerName($n)+" LOSE....");
-$m.addComments($m.getPlayerName($n)+" LOSE....");
-end
-rule "rightcorner"
-enabled false
-when  $p:CharacterData((Math.abs(480.0 - $p.getCenterX())/480.0)>0.9,$n:playerNumber)
-$m:Message()
-then   $m.setNext($m.getPlayerName($n)+" is forced in corner!");
-$m.addComments($m.getPlayerName($n)+" is forced in corner!");
-end
-rule "leftcorner"
-enabled false
-when  $p:CharacterData((Math.abs(480.0 - $p.getCenterX())/480.0)<0.1,$n:playerNumber)
-$m:Message()
-then   $m.setNext($m.getPlayerName($n)+" is forced in corner!");
-$m.addComments($m.getPlayerName($n)+" is forced in corner!");
-end
-//rule "comboCount"
-rule "combo"
-when CharacterData(hitCount>=3)
-$m:Message()
-then  $m.setCombo(true);
-end
-
-
-
-rule "fireOutput"
-when $m:Message(current!=next)
 then
-//System.out.println($m.getNext());
-$m.setCurrent($m.getNext());
+$m.setPlayerName($n);
+$m.setAction($action);
+$m.setEnd(true);
+end
+
+rule "combo"
+when 
+CharacterData(hitCount>=3,$n:playerNumber,$action:action.toString())
+$m:Message()
+then  
+$m.setCombo(true);
+$m.setPlayerName($n);
+$m.setAction($action);
+end
+
+rule "block"
+when 
+CharacterData(action.toString().equals("STAND_GUARD")||action.toString().equals("CROUCH_GUARD"),$n:playerNumber,$action:action.toString())
+CharacterData(hitCount>=1)
+$m:Message()
+then  
+$m.setBlock(true);
+$m.setPlayerName($n);
+$m.setAction($action);
 end

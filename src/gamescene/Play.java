@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +43,8 @@ import comment.Highlight;
 import comment.CommentService;
 import com.cavariux.twitchirc.Chat.*;
 import com.darkprograms.speech.synthesiser.SynthesiserV2;
+
+import com.mathworks.engine.*;
 import java.math.*;
 /**
  * 対戦中のシーンを扱うクラス．
@@ -117,6 +121,9 @@ public class Play extends GameScene {
 	public String j;
 	public static SynthesiserV2 synthesizer = new SynthesiserV2("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
 	public ArrayList<Highlight> hlList;
+	public  ArrayList<Double>hlScore;
+	public MatlabEngine eng;
+	
 	public Play() {
 		// 以下4行の処理はgamesceneパッケージ内クラスのコンストラクタには必ず含める
 		this.gameSceneName = GameSceneName.PLAY;
@@ -131,6 +138,7 @@ public class Play extends GameScene {
 	public void initialize() {
 		InputManager.getInstance().setSceneName(GameSceneName.PLAY);
 		hlList = new ArrayList<Highlight>();
+		hlScore=new ArrayList<Double>();
 		this.fighting = new Fighting();
 		this.fighting.initialize();
 
@@ -145,6 +153,7 @@ public class Play extends GameScene {
 		this.roundResults = new ArrayList<RoundResult>();
 
 		this.timeInfo = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd-HH.mm.ss", Locale.ENGLISH));
+		
 		
 		if (!FlagSetting.trainingModeFlag) {
 			openReplayFile();
@@ -195,9 +204,6 @@ public class Play extends GameScene {
 		} catch(Exception e) {
 			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
 		}
-			
-			
-			
 			
 		}
 		
@@ -262,6 +268,21 @@ public class Play extends GameScene {
 		InputManager.getInstance().clear();
 		 this.hlList = new ArrayList<Highlight>();
 	      msg = new Message();
+	      try {
+			eng=MatlabEngine.startMatlab();
+		} catch (EngineException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -295,63 +316,58 @@ public class Play extends GameScene {
 		this.fighting.processingFight(this.nowFrame, this.keyData);
 		this.frameData = this.fighting.createFrameData(this.nowFrame, this.currentRound);
 		int fn=this.frameData.currentFrameNumber;
-		String s1 = "Welcome to Fighting Ice rift.";
-		String s2 = "Player are fighting each other.";
-		String s3= "ZEN is rampaging.  ";
-		String s4 = "Victory belongs to AI!";
-		 Highlight hl = CommentService.setHighlight(this.frameData);  // probally return null
+		 Highlight hl = CommentService.setHighlight(this.frameData);  
 		 hlList.add(hl);
+		 boolean hlFlag= false;
+		 Set<String>comments = new HashSet<String>();
 		 try {
 				  
-			 this.msg = CommentService.generateComment(this.frameData, 30, this.kSession,this.msg);
-			   double speed =1.0;
-			   double pitch=1.0;
-			 //wed demo
-//			   ArrayList<String> comments = new ArrayList();
-//			   
-//			   if(fn==300) {
-//				   comments.add(s1);
-//				   msg.setComments(comments);
-//				   speed=1.0;
-//				   pitch=1.0;
-//				   CommentService.text2Speech(msg, synthesizer,speed,pitch);
-//			   }
-//			   if(fn==1000) {
-//				   speed=1.5;
-//				   comments.add(s2);
-//				   msg.setComments(comments);
-//				  // msg.setComments(comments);
-//				   CommentService.text2Speech(msg, synthesizer,speed,pitch);
-//			   }
-//			   if(fn==2000) {
-//				   pitch=1.5;
-//				   comments.add(s3);
-//				   msg.setComments(comments);
-//				  // msg.setComments(comments);
-//				   CommentService.text2Speech(msg, synthesizer,speed,pitch);
-//			   }
-//			   if(fn==3000) {
-//				   speed=2.0;
-//				   pitch=2.0;
-//				   comments.add(s4);
-//				   
-//				   msg.setComments(comments);
-//				   CommentService.text2Speech(msg, synthesizer,speed,pitch);
-//			   }
-			 //end wed demo
-				   //check limit
+			   float speed =1f;
+			   float pitch=1f;
+			   
+			   if(FlagSetting.enableComment) {
+				   this.msg = CommentService.generateComment(this.frameData, 30, this.kSession,this.msg);
+			   }
 			   
 			   
-			   
+			   if(fn%180==0) {
+				   //every 200f everate hl score
+				   double hls=0;
+				try {
+					if(FlagSetting.enableMatlab) {
+					hls = CommentService.evaluateHl(eng,CommentService.prepareHLData(hlList));
+					}} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				//System.out.println(hls);
+				 hlScore.add(hls);
+				 if(hlScore.size()>=3) {
+				   if(Math.abs(hlScore.get(hlScore.size()-1)-hlScore.get(hlScore.size()-2))>=0.1) {
+					  hlFlag=true;
+				   }
+				   if(hls>0.55) {
+					   hlFlag=true;
+				   }
+				 }
+			   }
+			   if(hlFlag) {
+				    comments= CommentService.deleteRepeatComments(msg.getComments(),10);
+			   }else {
+				   comments = CommentService.deleteRepeatComments(msg.getComments(),2);
+			   }
+			  
 			   if(FlagSetting.enableTwitchChat) {
-				   if(commentLimit>0) {
+				   if(commentLimit>0&&fn%180==0) {
 //					   System.out.println("comment limit :"+commentLimit);
 					   double rand= Math.random();
 					   int sent=0;
+					   
 							   if(rand>0.5) {
-							sent =CommentService.sendComment(msg, fbot, channel);
+							sent =CommentService.sendComment(comments, fbot, channel);
 							   }else {
-								   sent =CommentService.sendComment(msg,cb, channel);
+								   sent =CommentService.sendComment(comments,cb, channel);
 							   }
 				  		commentLimit -=sent;
 				   }
@@ -363,20 +379,30 @@ public class Play extends GameScene {
 				   
 			   }
 			   if(FlagSetting.enableTTS) {
-				   if(fn%300==0) {
+				   if(fn%180==0) {
 					  
-						CommentService.GTTS(msg, 1.0f, 1.0f, 0);
+						CommentService.GTTS(comments, hlFlag);
 						
 				   }
 				  
-				  // this.msg.emptyComments();
+				 
 				}
+			   if( fn%180==0) {
+				  
+				  for(String com : comments) {
+					  System.out.println(com);
+				  }
+				   this.msg.emptyComments();
+				   System.out.println("empty msg comments");
+			   }
+			   
 //			   if(this.msg.combo) {
 //				   this.msg = new Message();
 //			   }
-//			   
+			  
+			 
 			   }catch(Exception e) {
-					Logger.getAnonymousLogger().log(Level.SEVERE, e.getMessage());
+					e.printStackTrace();
 				}
 		   
 		// リレイログ吐き出し
@@ -427,6 +453,12 @@ public class Play extends GameScene {
 		// P1とP2の行った各アクションの数のデータをCSVに出力する
 		if (FlagSetting.debugActionFlag) {
 			DebugActionData.getInstance().outputActionCount();
+		}
+		try {
+			eng.close();
+		} catch (EngineException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

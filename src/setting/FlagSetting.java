@@ -75,5 +75,6 @@ public class FlagSetting {
 	public static boolean enableTwitchChat=false;
 	
 	public static boolean enableTTS=false;
+	public static boolean enableMatlab = false;
 
 }
