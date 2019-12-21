@@ -2,6 +2,8 @@ package comment;
 import struct.FrameData;
 import struct.CharacterData;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 public class Message {
 	public String current;
 	public String next;
@@ -135,6 +137,32 @@ public class Message {
 	public void emptyComments(){
 		comments.clear();
 	}
-	
+	public void deleteRepeatComments(int size) {
+		//shink size
+		Set<String> commentSet = new HashSet<>();
+		int difSize = comments.size()-size;
+		if(difSize>0) {
+			for(int i = difSize;i>0;i--) {
+				comments.remove(i);
+			}
+		}
+		
+		
+		try {
+			for(String comment : comments) {
+				commentSet.add(comment);
+			}
+			comments.clear();
+			comments.addAll(commentSet);
+		
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+	}
 	
 }

@@ -26,7 +26,6 @@ public class Main {
 		// ゲームの開始
 		displayManager.start(game);
 
-       
 		
 		
 	}

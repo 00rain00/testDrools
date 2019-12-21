@@ -25,9 +25,9 @@ import ice_agent.TTSBridge;
 
 import com.cavariux.twitchirc.Chat.Channel;
 import com.cavariux.twitchirc.Core.TwitchBot;
-import com.darkprograms.speech.synthesiser.SynthesiserV2;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.AdvancedPlayer;
+//import com.darkprograms.speech.synthesiser.SynthesiserV2;
+//import javazoom.jl.decoder.JavaLayerException;
+//import javazoom.jl.player.advanced.AdvancedPlayer;
 import com.mathworks.engine.*;
 import java.util.concurrent.*;
 public class CommentService {
@@ -310,28 +310,24 @@ public class CommentService {
 		
 	}
 	
-	public static Message generateComment(FrameData fd,int frequence,KieSession ks,Message msg) {
+	public static Message generateComment(FrameData fd,KieSession ks,boolean hlFlag) {
+		Message msg = new Message();
 		try {
-		
-		CharacterData p1 =  fd.getCharacter(true);
-		CharacterData p2 =  fd.getCharacter(false);
-		int currentFrame = fd.currentFrameNumber;
-		if(currentFrame>=1) {
-			double difdis=(double)Math.abs((Math.abs(p1.getCenterX()-p2.getCenterX())-41.0))/879.0;//normalize to 0-1
-			double d1 = 1.0 - ((double)Math.abs(480.0 - p1.getCenterX())/480.0); //0->left corner 1-> right corner
-			double d2 = 1.0 - ((double)Math.abs(480.0 - p2.getCenterX())/480.0);
+			CharacterData p1 =  fd.getCharacter(true);
+			CharacterData p2 =  fd.getCharacter(false);
 			
-			if(currentFrame%frequence ==0) {
+		
 				   ks.insert(p1);
 				   ks.insert(p2);
 				   ks.insert(msg);
 				  
 				   ks.fireAllRules();
-			  		
-				
-			}else {
-				
-			}
+			
+			double difdis=(double)Math.abs((Math.abs(p1.getCenterX()-p2.getCenterX())-41.0))/879.0;//normalize to 0-1
+			double d1 = 1.0 - ((double)Math.abs(480.0 - p1.getCenterX())/480.0); //0->left corner 1-> right corner
+			double d2 = 1.0 - ((double)Math.abs(480.0 - p2.getCenterX())/480.0);
+			
+			
 			String action = getActionRealName(msg.getAction());
 			String playerName = msg.getPlayerName();
 			//jifei
@@ -400,76 +396,23 @@ public class CommentService {
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
+
 			
+
+			if(hlFlag) {
+			   msg.deleteRepeatComments(10);
+		   }else {
+			   msg.deleteRepeatComments(2);
+		   }
+		
 			
-		}
-		
-		
-		
-		
-		
-		
-		
-		
 		}catch(Exception e) {
 			logger.error(e.getMessage(),e);
 		}
 		return msg;
 	}
-	public static void text2Speech(Message msg, SynthesiserV2 synthesizer,double speed,double pitch,double hlScore) {
-		ArrayList<String> comments  = msg.getComments();
-		String text = "";
-		for (String com : comments) {
-			text = text.concat(com).concat(".");
-		}
-		logger.info(text);
-		logger.info("comment size:"+comments.size());
-		switch((int)hlScore) {
-		case 1:
-			synthesizer.setPitch(1.0);
-			synthesizer.setSpeed(1.0);
-			break;
-		case 2:
-			synthesizer.setPitch(1.3);
-			synthesizer.setSpeed(1.1);
-			break;
-		case 3:
-			synthesizer.setPitch(1.5);
-			synthesizer.setSpeed(1.2);
-			break;
-		}
-		if(msg.combo) {
-			synthesizer.setPitch(1.3);
-			synthesizer.setSpeed(1.1);
-		}
-		
-		//Create a new Thread because JLayer is running on the current Thread and will make the application to lag
-		Thread thread = new Thread(() -> {
-			try {
-				
-				//double pitch =synthesizer.getPitch();
-				//double speed =synthesizer.getSpeed();
-				//Create a JLayer instance
-				AdvancedPlayer player = new AdvancedPlayer(synthesizer.getMP3Data(comments));
-				player.play();
-				
-				System.out.println("Successfully got back synthesizer data,pitch:"+pitch+"speed:"+speed);
-				
-			} catch (IOException | JavaLayerException e) {
-				
-				e.printStackTrace(); //Print the exception ( we want to know , not hide below our finger , like many developers do...)
-				
-			}
-		});
-		
-		//We don't want the application to terminate before this Thread terminates
-		thread.setDaemon(false);
-		
-		//Start the Thread
-		thread.start();
-	}
 	
-	public static int sendComment(Set<String> comments,TwitchBot bot, Channel ch) {
+	public static int sendComment(ArrayList<String> comments,TwitchBot bot, Channel ch) {
 		
 		int totalSentComment = comments.size();
 		try {
@@ -494,7 +437,7 @@ public class CommentService {
         return hlScore;
         
 	}
-	public static void GTTS(Set<String> comments,boolean hlFlag) {
+	public static void GTTS(ArrayList<String> comments,boolean hlFlag) {
 		
 		
 		Thread thread = new Thread(() -> {
@@ -506,9 +449,9 @@ public class CommentService {
 				tts.rate=1f;
 				tts.pitch=1f;
 				if(hlFlag) {
-					tts.rate=1.5f;
-					tts.pitch=1.5f;
-					tts.gain=2f;
+					tts.rate=1f;
+					tts.pitch=100f;
+					tts.gain=1f;
 				}
 				
 				String text = "";
@@ -554,38 +497,12 @@ public class CommentService {
 	public static String getActionRealName(String skillCode) {
 		return skillMap.getOrDefault(skillCode, "attack");
 	}
-	public static Set deleteRepeatComments(ArrayList<String> comments,int size) {
-		//shink size
-		int difSize = comments.size()-size;
-		if(difSize>0) {
-			for(int i = difSize;i>0;i--) {
-				comments.remove(i);
-			}
-		}
-		Set<String> commentSet = new HashSet<>();
-		
-		try {
-			for(String comment : comments) {
-				commentSet.add(comment);
-			}
-			
-			
-			
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return commentSet;
-		
-		
-	}
+	
 	public static String matchTemplate(String temp,String action, String playerName) {
 		
-		String c = temp.replace("@", playerName);
 		
-		
-		String a = c.replace("!", action);
-		return a;
+		String comment =  temp.replace("@", playerName).replace("!", action);
+		return comment;
 	}
 	
 }

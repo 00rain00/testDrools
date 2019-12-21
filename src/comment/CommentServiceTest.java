@@ -2,16 +2,24 @@ package comment;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import struct.FrameData;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.cavariux.twitchirc.Chat.Channel;
+
 import fighting.Fighting;
 import struct.CharacterData;
 import fighting.Character;
-import com.darkprograms.speech.synthesiser.SynthesiserV2;
+import comment.Fightbot;
+import comment.CommentBot;
+//import com.darkprograms.speech.synthesiser.SynthesiserV2;
 public class CommentServiceTest {
 
 	@Before
@@ -40,22 +48,7 @@ public class CommentServiceTest {
 			e.printStackTrace();
 		}
 	}
-	@Test
-	public void testText2Speech() {
-		try {
-		Message msg = new Message();
-		msg.addComments("ZEN use high kick");
-		msg.addComments("ZEN use low kick");
-		msg.addComments("ZEn use super kick");
-		SynthesiserV2 synthesizer = new SynthesiserV2("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
-		//CommentService.text2Speech(msg, synthesizer);
-		
-		
-		Thread.sleep(10000);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 	@Test
 	public void testTestMatlab() {
 //		try {
@@ -68,7 +61,7 @@ public class CommentServiceTest {
 	@Test
 	public void testTTS() {
 		try {
-			Set<String>comments = new HashSet<String>();
+			ArrayList<String>comments = new ArrayList<String>();
 			comments.add("Exactly huge attack Over there sending ZEN to the asmosphere!");
 			boolean hlFlag = true;
 			CommentService.GTTS(comments, hlFlag);
@@ -79,5 +72,66 @@ public class CommentServiceTest {
 		
 		
 	}
-
+	@Test
+	public void testSendComment() {
+		try {
+		 Fightbot fbot;
+		CommentBot cb;
+	  Channel channel;
+			String cName = "#hunteer_999";
+			System.out.println("initial bot connections :"+cName);
+		 fbot = new Fightbot();
+			cb = new CommentBot();
+			fbot.connect();
+			cb.connect();
+			 channel = fbot.joinChannel(cName);
+			 cb.joinChannel(cName);
+			Set<String>comments = new HashSet<String>();
+			comments.add("Exactly huge attack Over there sending ZEN to the asmosphere!");
+		//	CommentService.sendComment(comments, fbot, channel);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	@Test
+	public void testAsyn() {
+//		CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+//		    // Simulate a long-running Job   
+//		    try {
+//		        TimeUnit.SECONDS.sleep(1);
+//		    } catch (InterruptedException e) {
+//		        throw new IllegalStateException(e);
+//		    }
+//		    System.out.println("I'll run in a separate thread than the main thread.");
+//		});
+//		try {
+//			Thread.sleep(10000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		future.runAsync(() -> {
+//		    // Simulate a long-running Job   
+//		    try {
+//		        TimeUnit.SECONDS.sleep(1);
+//		    } catch (InterruptedException e) {
+//		        throw new IllegalStateException(e);
+//		    }
+//		    System.out.println("I'll run in a separate thread than the main thread.2");
+//		});
+//		
+//		
+//		try {
+//			Thread.sleep(10000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		
+		
+	}
 }

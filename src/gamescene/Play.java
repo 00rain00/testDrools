@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +43,7 @@ import comment.CommentBot;
 import comment.Highlight;
 import comment.CommentService;
 import com.cavariux.twitchirc.Chat.*;
-import com.darkprograms.speech.synthesiser.SynthesiserV2;
+//import com.darkprograms.speech.synthesiser.SynthesiserV2;
 
 import com.mathworks.engine.*;
 import java.math.*;
@@ -119,11 +120,11 @@ public class Play extends GameScene {
 	 public CommentBot cb;
 	public  Channel channel;
 	public String j;
-	public static SynthesiserV2 synthesizer = new SynthesiserV2("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
+	//public static SynthesiserV2 synthesizer = new SynthesiserV2("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
 	public ArrayList<Highlight> hlList;
 	public  ArrayList<Double>hlScore;
 	public MatlabEngine eng;
-	
+	 static int frequency=100;
 	public Play() {
 		// 以下4行の処理はgamesceneパッケージ内クラスのコンストラクタには必ず含める
 		this.gameSceneName = GameSceneName.PLAY;
@@ -181,24 +182,24 @@ public class Play extends GameScene {
 			this.setNextGameScene(lunch);
 		}
 		if (FlagSetting.enableWindow && !FlagSetting.muteFlag) {
-			SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
+			//SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
 		}
 		if (FlagSetting.enableComment) {
 			this.ks = KieServices.Factory.get();
 		    this.kContainer = ks.getKieClasspathContainer();
-		     this.kSession = kContainer.newKieSession("ksession-rules");
+		    this.kSession = kContainer.newKieSession("ksession-rules");
 			
 			
 		}
 		if(FlagSetting.enableTwitchChat) {
 			try {
 			String cName = "#hunteer_999";
-			System.out.println("initial bot connections :"+cName);
+//			System.out.println("initial bot connections :"+cName);
 			this.fbot = new Fightbot();
 			this.cb = new CommentBot();
 			fbot.connect();
 			cb.connect();
-			 channel = fbot.joinChannel(cName);
+			channel= fbot.joinChannel(cName);
 			 cb.joinChannel(cName);
 			
 		} catch(Exception e) {
@@ -271,16 +272,12 @@ public class Play extends GameScene {
 	      try {
 			eng=MatlabEngine.startMatlab();
 		} catch (EngineException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -319,87 +316,75 @@ public class Play extends GameScene {
 		 Highlight hl = CommentService.setHighlight(this.frameData);  
 		 hlList.add(hl);
 		 boolean hlFlag= false;
-		 Set<String>comments = new HashSet<String>();
+		 CompletableFuture<Void> future;
+		// Set<String>comments = new HashSet<String>();
 		 try {
-				  
-			   float speed =1f;
-			   float pitch=1f;
-			   
-			   if(FlagSetting.enableComment) {
-				   this.msg = CommentService.generateComment(this.frameData, 30, this.kSession,this.msg);
-			   }
-			   
-			   
-			   if(fn%180==0) {
-				   //every 200f everate hl score
-				   double hls=0;
-				try {
-					if(FlagSetting.enableMatlab) {
-					hls = CommentService.evaluateHl(eng,CommentService.prepareHLData(hlList));
-					}} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				//System.out.println(hls);
-				 hlScore.add(hls);
-				 if(hlScore.size()>=3) {
-				   if(Math.abs(hlScore.get(hlScore.size()-1)-hlScore.get(hlScore.size()-2))>=0.1) {
-					  hlFlag=true;
-				   }
-				   if(hls>0.55) {
-					   hlFlag=true;
-				   }
-				 }
-			   }
-			   if(hlFlag) {
-				    comments= CommentService.deleteRepeatComments(msg.getComments(),10);
-			   }else {
-				   comments = CommentService.deleteRepeatComments(msg.getComments(),2);
-			   }
-			  
-			   if(FlagSetting.enableTwitchChat) {
-				   if(commentLimit>0&&fn%180==0) {
-//					   System.out.println("comment limit :"+commentLimit);
-					   double rand= Math.random();
-					   int sent=0;
-					   
-							   if(rand>0.5) {
-							sent =CommentService.sendComment(comments, fbot, channel);
-							   }else {
-								   sent =CommentService.sendComment(comments,cb, channel);
-							   }
-				  		commentLimit -=sent;
-				   }
-//				   //  50 comments per 30s 
-				   if(this.frameData.currentFrameNumber>=1700) {
-					   commentLimit =50;
-				   }
-				   
-				   
-			   }
-			   if(FlagSetting.enableTTS) {
-				   if(fn%180==0) {
+				  if(fn%frequency==0&&fn>=10) {
 					  
-						CommentService.GTTS(comments, hlFlag);
-						
-				   }
-				  
-				 
-				}
-			   if( fn%180==0) {
-				  
-				  for(String com : comments) {
-					  System.out.println(com);
+						if(FlagSetting.enableMatlab) {
+							 double hls=0;
+						hls = CommentService.evaluateHl(eng,CommentService.prepareHLData(hlList));
+						//System.out.println(hls);
+						 hlScore.add(hls);
+						 if(hlScore.size()>=3) {
+						   if(Math.abs(hlScore.get(hlScore.size()-1)-hlScore.get(hlScore.size()-2))>=0.1) {
+							  hlFlag=true;
+						   }
+						   if(hls>0.55) {
+							   hlFlag=true;
+						   }
+						 }
+						  
+						}
+					  
+					  
+					  if(FlagSetting.enableComment) {
+						   
+						  this.msg = CommentService.generateComment(this.frameData, this.kSession,hlFlag);
+					   }
+					  
+					  if(FlagSetting.enableTwitchChat) {
+						   if(commentLimit>0) {
+//							   System.out.println("comment limit :"+commentLimit);
+							   double rand= Math.random();
+							   int sent=0;
+							   
+									   if(rand>0.5) {
+									sent =CommentService.sendComment(this.msg.getComments(), fbot, channel);
+									   }else {
+										   sent =CommentService.sendComment(this.msg.getComments(),cb, channel);
+									   }
+						  		commentLimit -=sent;
+						   }
+//						   //  50 comments per 30s 
+						   if(this.frameData.currentFrameNumber>=1700) {
+							   commentLimit =50;
+						   }
+						   
+						   
+					   }
+					   if(FlagSetting.enableTTS) {
+						  
+							  
+								CommentService.GTTS(this.msg.getComments(), hlFlag);
+								
+						}
+					  
 				  }
-				   this.msg.emptyComments();
-				   System.out.println("empty msg comments");
-			   }
-			   
-//			   if(this.msg.combo) {
-//				   this.msg = new Message();
-//			   }
 			  
+			  
+			  
+			 
+//			   if( fn%180==0) {
+//				  
+//				  for(String com : comments) {
+//					  System.out.println(com);
+//				  }
+//				   this.msg.emptyComments();
+//				   System.out.println("empty msg comments");
+//			   }
+//			   
+//			   
 			 
 			   }catch(Exception e) {
 					e.printStackTrace();
@@ -457,7 +442,6 @@ public class Play extends GameScene {
 		try {
 			eng.close();
 		} catch (EngineException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -18,7 +18,7 @@ public class TTSBridge {
 	public TTSBridge() {
 		this.voice_name = "ja-JP-Wavenet-C";
 		this.language_code = "ja-JP";
-		this.gain = 0f;
+		this.gain = 0f; //16
 		this.rate = 1.0f;
 		this.pitch = 20f;
 	}
@@ -58,7 +58,7 @@ public class TTSBridge {
 		mySetting.put("language_code", this.language_code);
 		mySetting.put("gain", String.valueOf(this.gain));
 		mySetting.put("rate", String.valueOf(this.rate));
-		mySetting.put("pitch", String.valueOf(this.rate));
+		mySetting.put("pitch", String.valueOf(this.pitch));
 		mySetting.put("text", text);
 		try {
 			String result = request.post("http://127.0.0.1:1688/icetts/play", mySetting);
