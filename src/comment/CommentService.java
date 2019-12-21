@@ -449,9 +449,9 @@ public class CommentService {
 				tts.rate=1f;
 				tts.pitch=1f;
 				if(hlFlag) {
-					tts.rate=1f;
-					tts.pitch=100f;
-					tts.gain=1f;
+					tts.rate=1.2f;
+					tts.pitch=3f;
+					tts.gain=10f;
 				}
 				
 				String text = "";
