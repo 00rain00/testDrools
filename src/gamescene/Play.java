@@ -38,6 +38,8 @@ import comment.Message;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
+
 import comment.Fightbot;
 import comment.CommentBot;
 import comment.Highlight;
@@ -113,7 +115,7 @@ public class Play extends GameScene {
 	
 	 public KieServices ks;
 	 public  KieContainer kContainer;
-	 public KieSession kSession;
+	 public StatelessKieSession kSession;
 	 public Message msg;
 	 static int commentLimit;
 	 public Fightbot fbot;
@@ -124,7 +126,7 @@ public class Play extends GameScene {
 	public ArrayList<Highlight> hlList;
 	public  ArrayList<Double>hlScore;
 	public MatlabEngine eng;
-	 static int frequency=100;
+	 static int frequency=60;
 	public Play() {
 		// 以下4行の処理はgamesceneパッケージ内クラスのコンストラクタには必ず含める
 		this.gameSceneName = GameSceneName.PLAY;
@@ -187,7 +189,7 @@ public class Play extends GameScene {
 		if (FlagSetting.enableComment) {
 			this.ks = KieServices.Factory.get();
 		    this.kContainer = ks.getKieClasspathContainer();
-		    this.kSession = kContainer.newKieSession("ksession-rules");
+		    this.kSession = kContainer.newStatelessKieSession("ksession-rules");
 			
 			
 		}
@@ -235,7 +237,7 @@ public class Play extends GameScene {
 			Logger.getAnonymousLogger().log(Level.INFO, "Game over");
 			if (FlagSetting.enableWindow && !FlagSetting.muteFlag) {
 				// BGMを止める
-				SoundManager.getInstance().stop(SoundManager.getInstance().getBackGroundMusic());
+			//	SoundManager.getInstance().stop(SoundManager.getInstance().getBackGroundMusic());
 			}
 
 			Result result = new Result(this.roundResults, this.timeInfo);
@@ -319,6 +321,7 @@ public class Play extends GameScene {
 		 CompletableFuture<Void> future;
 		// Set<String>comments = new HashSet<String>();
 		 try {
+			
 				  if(fn%frequency==0&&fn>=10) {
 					  
 						if(FlagSetting.enableMatlab) {
@@ -341,7 +344,8 @@ public class Play extends GameScene {
 					  if(FlagSetting.enableComment) {
 						   
 						  this.msg = CommentService.generateComment(this.frameData, this.kSession,hlFlag);
-					   }
+					
+					  }
 					  
 					  if(FlagSetting.enableTwitchChat) {
 						   if(commentLimit>0) {
@@ -386,9 +390,7 @@ public class Play extends GameScene {
 //			   
 //			   
 			 
-			   }catch(Exception e) {
-					e.printStackTrace();
-				}
+			 
 		   
 		// リレイログ吐き出し
 		if (!FlagSetting.trainingModeFlag) {
@@ -418,14 +420,34 @@ public class Play extends GameScene {
 
 		// 体力が0orタイムオーバーならラウンド終了処理
 		if (isBeaten() || isTimeOver()) {
+			
+			  
+			  if(FlagSetting.enableComment) {
+				   
+				  this.msg = CommentService.generateComment(this.frameData, this.kSession,hlFlag);
+			
+			  }
+			  if(FlagSetting.enableTTS) {
+				  
+				  
+					CommentService.GTTS(this.msg.getComments(), hlFlag);
+					
+			}
+			 
 			processingRoundEnd();
 		}
+		
+		  }catch(Exception e) {
+				e.printStackTrace();
+			}
 	}
 
 	/**
 	 * ラウンド終了時の処理を行う.
+	 * @throws InterruptedException 
 	 */
-	private void processingRoundEnd() {
+	private void processingRoundEnd() throws InterruptedException {
+		 
 		this.fighting.processingRoundEnd();
 		RoundResult roundResult = new RoundResult(this.frameData);
 		this.roundResults.add(roundResult);

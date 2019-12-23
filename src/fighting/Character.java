@@ -400,7 +400,7 @@ public class Character {
 				setSpeedY(0);
 
 				if (FlagSetting.enableWindow && !FlagSetting.muteFlag && !this.isSimulateProcess) {
-					SoundManager.getInstance().play(SoundManager.getInstance().getSoundEffect().get("Landing.wav"));
+					//SoundManager.getInstance().play(SoundManager.getInstance().getSoundEffect().get("Landing.wav"));
 				}
 			}
 

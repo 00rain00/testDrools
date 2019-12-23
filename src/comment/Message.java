@@ -3,7 +3,9 @@ import struct.FrameData;
 import struct.CharacterData;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
+import ice_agent.TTSBridge;
 public class Message {
 	public String current;
 	public String next;
@@ -137,18 +139,20 @@ public class Message {
 	public void emptyComments(){
 		comments.clear();
 	}
-	public void deleteRepeatComments(int size) {
+	public void deleteRepeatComments(int size)  {
 		//shink size
 		Set<String> commentSet = new HashSet<>();
 		int difSize = comments.size()-size;
+		Random rand = new Random();
+		try {
 		if(difSize>0) {
-			for(int i = difSize;i>0;i--) {
-				comments.remove(i);
+			for(int i = 0;i<difSize;i++) {
+				//comments.remove(i);
 			}
 		}
 		
 		
-		try {
+	
 			for(String comment : comments) {
 				commentSet.add(comment);
 			}
@@ -161,8 +165,45 @@ public class Message {
 		}
 		
 		
-		
-		
 	}
+	public void speak(String text,boolean hlFlag) {
+		Thread thread = new Thread(() -> {
+			try {
+				//1f 2f
+				TTSBridge tts = new TTSBridge();
+				tts.voice_name = "en-GB-Wavenet-B";
+				tts.language_code="en-GB";
+				tts.rate=1f; //1.2
+				tts.pitch=1f; //3
+				if(hlFlag) {
+					tts.rate=1.2f;
+					tts.pitch=3f;
+					tts.gain=10f;
+				}
+				
+				
+				
+				
+				
+				// 说话
+				tts.speak(text);
+				System.out.println(text);
+				//System.out.println("Successfully got back synthesizer data,pitch:"+pitch+"speed:"+speed);
+				
+			} catch (Exception e) {
+				
+				e.printStackTrace(); //Print the exception ( we want to know , not hide below our finger , like many developers do...)
+				
+			}
+		});
+		
+		//We don't want the application to terminate before this Thread terminates
+		thread.setDaemon(false);
+		
+		//Start the Thread
+		thread.start();
+	}
+	
+	
 	
 }

@@ -64,7 +64,7 @@ public class TTSBridge {
 			String result = request.post("http://127.0.0.1:1688/icetts/play", mySetting);
 			boolean isFound = result.contains("TTS is playing.");
 			if (isFound) {
-				System.out.println(result);
+			//	System.out.println(result);
 				return true;
 			} else {
 				return false;

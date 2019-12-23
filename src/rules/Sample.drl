@@ -55,13 +55,18 @@ $p2:CharacterData($p2.playerNumber==false)
 then
 end
 rule "ult"
-when CharacterData(hitCount>=1,action.toString().equals("STAND_D_DF_FA")||action.toString().equals("STAND_D_DF_FB")||action.toString().equals("STAND_F_D_DFA")||action.toString().equals("STAND_F_D_DFB")||action.toString().equals("STAND_D_DF_FC")||action.toString().equals("STAND_D_DB_BB"),$n:playerNumber,$action:action.toString())
+no-loop
+when CharacterData(action.toString().equals("STAND_D_DF_FB")||action.toString().equals("STAND_F_D_DFA")||action.toString().equals("STAND_F_D_DFB")||action.toString().equals("STAND_D_DF_FC"),$n:playerNumber,$action:action.toString())
 
 $m:Message()  
 then 
 $m.setAction($action);
 $m.setPlayerName($n);
 $m.setUlt(true);
+//$m.speek("Hear is the supper hit in activiation",true);
+
+//System.out.println("engine data :"+$action);
+
 end
 rule "lowhp"
 when CharacterData(hp<=30,$n:playerNumber,$action:action.toString())
@@ -92,13 +97,16 @@ $m.setAction($action);
 end
 
 rule "lose"
-when CharacterData(hp<=0)
+when 
+CharacterData(hp<=0)
 $p1:CharacterData(hp>0,$n:playerNumber,$action:action.toString())
 $m:Message()
 then
 $m.setPlayerName($n);
 $m.setAction($action);
 $m.setEnd(true);
+//System.out.println("engine data lose:"+$action);
+//$m.speak("round end!",true);
 end
 
 rule "combo"

@@ -4,6 +4,7 @@ import struct.CharacterData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,6 +21,8 @@ import comment.Highlight;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
+
 import comment.Message;
 import ice_agent.TTSBridge;
 
@@ -310,18 +313,13 @@ public class CommentService {
 		
 	}
 	
-	public static Message generateComment(FrameData fd,KieSession ks,boolean hlFlag) {
+	public static Message generateComment(FrameData fd,StatelessKieSession ks,boolean hlFlag) {
 		Message msg = new Message();
 		try {
 			CharacterData p1 =  fd.getCharacter(true);
 			CharacterData p2 =  fd.getCharacter(false);
-			
-		
-				   ks.insert(p1);
-				   ks.insert(p2);
-				   ks.insert(msg);
-				  
-				   ks.fireAllRules();
+			System.out.println("p1:"+fd.getFramesNumber()+"ACTION:"+p1.getAction().toString());
+			ks.execute(Arrays.asList(new Object[] {p1,p2,msg}));
 			
 			double difdis=(double)Math.abs((Math.abs(p1.getCenterX()-p2.getCenterX())-41.0))/879.0;//normalize to 0-1
 			double d1 = 1.0 - ((double)Math.abs(480.0 - p1.getCenterX())/480.0); //0->left corner 1-> right corner
@@ -331,29 +329,29 @@ public class CommentService {
 			String action = getActionRealName(msg.getAction());
 			String playerName = msg.getPlayerName();
 			//jifei
-//			if((msg.getOffence()==1||msg.getOffence()==0)&msg.getState()=="air") {
-//				String text =air[getRandomNumber(air.length)];
-//				msg.addComments(matchTemplate(text,action,playerName));
-//				
-//			}
-			//normal
-			if(msg.getOffence()==-1) {
-				String text =normal[getRandomNumber(normal.length)];
-				String a =matchTemplate(text,action,playerName);
-				msg.addComments(a);
+			if((msg.getOffence()==1||msg.getOffence()==0)&msg.getState()=="air") {
+				String text =air[getRandomNumber(air.length)];
+				msg.addComments(matchTemplate(text,action,playerName));
+				
 			}
-			//distance
+//			normal
+//			if(msg.getOffence()==-1) {
+//				String text =normal[getRandomNumber(normal.length)];
+//				String a =matchTemplate(text,action,playerName);
+//				msg.addComments(a);
+//			}
+//			distance
 			if(difdis>=0.5) {
 				String text =distance[getRandomNumber(distance.length)];
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
 			//corner
-			if(msg.isCorner()&&difdis<=0.4) {
-				String text =corner[getRandomNumber(corner.length)];
-				String a =matchTemplate(text,action,playerName);
-				msg.addComments(a);
-			}
+//			if(msg.isCorner()&&difdis<=0.4) {
+//				String text =corner[getRandomNumber(corner.length)];
+//				String a =matchTemplate(text,action,playerName);
+//				msg.addComments(a);
+//			}
 			//ult
 			if(msg.isUlt()) {
 				String text =ult[getRandomNumber(ult.length)];
@@ -373,11 +371,11 @@ public class CommentService {
 				msg.addComments(a);
 			}
 			//heavy
-			if(msg.isHeavy()) {
-				String text =heavy[getRandomNumber(heavy.length)];
-				String a =matchTemplate(text,action,playerName);
-				msg.addComments(a);
-			}
+//			if(msg.isHeavy()) {
+//				String text =heavy[getRandomNumber(heavy.length)];
+//				String a =matchTemplate(text,action,playerName);
+//				msg.addComments(a);
+//			}
 			//end
 			if(msg.isEnd()) {
 				String text =end[getRandomNumber(end.length)];
@@ -400,7 +398,7 @@ public class CommentService {
 			
 
 			if(hlFlag) {
-			   msg.deleteRepeatComments(10);
+			   msg.deleteRepeatComments(4);
 		   }else {
 			   msg.deleteRepeatComments(2);
 		   }
@@ -439,30 +437,43 @@ public class CommentService {
 	}
 	public static void GTTS(ArrayList<String> comments,boolean hlFlag) {
 		
-		
+		System.out.println("GTTS fired");
 		Thread thread = new Thread(() -> {
 			try {
 				//1f 2f
 				TTSBridge tts = new TTSBridge();
 				tts.voice_name = "en-GB-Wavenet-B";
 				tts.language_code="en-GB";
-				tts.rate=1f;
-				tts.pitch=1f;
+				tts.rate=1f; //1.2
+				tts.pitch=1f; //3
 				if(hlFlag) {
-					tts.rate=1.2f;
+					
 					tts.pitch=3f;
 					tts.gain=10f;
 				}
+				// 
+				int size = comments.size();
+				if (size>1&&size<=3) {
+					tts.rate = 1.3f;
+				}
+				if(size>3) {
+					tts.rate = 1.6f;
+				}
 				
-				String text = "";
+					
+					
+				
+			//	String text = "";
 				for (String com : comments) {
-					text = text.concat(com).concat(".");
+					//text = text.concat(com).concat(".");
+					tts.speak(com);
+					System.out.println(com);
 				}
 				
 				
 				// 说话
-				tts.speak(text);
-				
+			//	tts.speak(text);
+			//	System.out.println(text);
 				//System.out.println("Successfully got back synthesizer data,pitch:"+pitch+"speed:"+speed);
 				
 			} catch (Exception e) {

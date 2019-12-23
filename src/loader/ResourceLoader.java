@@ -537,8 +537,8 @@ public class ResourceLoader {
 	 * BGMを読み込む．
 	 */
 	private void loadBackGroundMusic() {
-		SoundManager.getInstance().setBackGroundMusic(SoundManager.getInstance()
-				.loadSoundResource(ResourceSetting.SOUND_DIRECTORY + ResourceSetting.BGM_FILE, true));
+		//SoundManager.getInstance().setBackGroundMusic(SoundManager.getInstance()
+		//		.loadSoundResource(ResourceSetting.SOUND_DIRECTORY + ResourceSetting.BGM_FILE, true));
 	}
 
 	/**
