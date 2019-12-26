@@ -347,11 +347,7 @@ public class CommentService {
 				msg.addComments(a);
 			}
 			//corner
-//			if(msg.isCorner()&&difdis<=0.4) {
-//				String text =corner[getRandomNumber(corner.length)];
-//				String a =matchTemplate(text,action,playerName);
-//				msg.addComments(a);
-//			}
+			if(msg.isCorner()&&difdis<=0.4) {
 			//ult
 			if(msg.isUlt()) {
 				String text =ult[getRandomNumber(ult.length)];
