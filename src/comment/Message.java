@@ -3,6 +3,7 @@ import struct.FrameData;
 import struct.CharacterData;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
 import ice_agent.TTSBridge;
@@ -139,26 +140,36 @@ public class Message {
 	public void emptyComments(){
 		comments.clear();
 	}
-	public void deleteRepeatComments(int size)  {
+	public void deleteRepeatComments(boolean hlFlag)  {
 		//shink size
-		Set<String> commentSet = new HashSet<>();
-		int difSize = comments.size()-size;
-		Random rand = new Random();
-		try {
-		if(difSize>0) {
-			for(int i = 0;i<difSize;i++) {
-				//comments.remove(i);
+		Set<String> commentSet = new LinkedHashSet<>();
+		
+		int size =0;
+		//add emotes after hl
+		for(int i =0;i<comments.size();i++) {
+			String temp = comments.get(i);
+			if(hlFlag) {
+			comments.set(i, temp.concat(" BatChest"));
 			}
+			
+		}
+		
+		for(String comment : comments) {
+			commentSet.add(comment);
+		}
+		
+		comments.clear();
+		if(hlFlag) {
+			comments.addAll(commentSet);
+			
+		}else {
+			comments.add((String) commentSet.toArray()[0]);
 		}
 		
 		
-	
-			for(String comment : comments) {
-				commentSet.add(comment);
-			}
-			comments.clear();
-			comments.addAll(commentSet);
-		
+		try {
+			
+			
 			
 		}catch (Exception e) {
 			e.printStackTrace();

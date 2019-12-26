@@ -322,20 +322,23 @@ public class Play extends GameScene {
 		// Set<String>comments = new HashSet<String>();
 		 try {
 			
-				  if(fn%frequency==0&&fn>=10) {
+				  if(fn%frequency==0&&fn>=60) {
 					  
 						if(FlagSetting.enableMatlab) {
 							 double hls=0;
-						hls = CommentService.evaluateHl(eng,CommentService.prepareHLData(hlList));
+					//	hls = CommentService.evaluateHl(eng,CommentService.prepareHLData(hlList));
 						//System.out.println(hls);
 						 hlScore.add(hls);
 						 if(hlScore.size()>=3) {
-						   if(Math.abs(hlScore.get(hlScore.size()-1)-hlScore.get(hlScore.size()-2))>=0.1) {
-							  hlFlag=true;
-						   }
-						   if(hls>0.55) {
-							   hlFlag=true;
-						   }
+//						   if(Math.abs(hlScore.get(hlScore.size()-1)-hlScore.get(hlScore.size()-2))>=0.1) {
+//							  hlFlag=true;
+//						   }
+//						   if(hls>0.55) {
+//							   hlFlag=true;
+//						   }
+							 
+							hlFlag=CommentService.evaluateHlByDistanceCue(this.frameData); 
+							//hlFlag = CommentService.evaluateHlByRandomSeed(frameData);
 						 }
 						  
 						}

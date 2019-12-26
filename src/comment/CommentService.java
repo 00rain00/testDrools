@@ -348,6 +348,10 @@ public class CommentService {
 			}
 			//corner
 			if(msg.isCorner()&&difdis<=0.4) {
+				String text =corner[getRandomNumber(corner.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
 			//ult
 			if(msg.isUlt()) {
 				String text =ult[getRandomNumber(ult.length)];
@@ -367,11 +371,11 @@ public class CommentService {
 				msg.addComments(a);
 			}
 			//heavy
-//			if(msg.isHeavy()) {
-//				String text =heavy[getRandomNumber(heavy.length)];
-//				String a =matchTemplate(text,action,playerName);
-//				msg.addComments(a);
-//			}
+			if(msg.isHeavy()) {
+				String text =heavy[getRandomNumber(heavy.length)];
+				String a =matchTemplate(text,action,playerName);
+				msg.addComments(a);
+			}
 			//end
 			if(msg.isEnd()) {
 				String text =end[getRandomNumber(end.length)];
@@ -393,11 +397,11 @@ public class CommentService {
 
 			
 
-			if(hlFlag) {
-			   msg.deleteRepeatComments(4);
-		   }else {
-			   msg.deleteRepeatComments(2);
-		   }
+		
+			   msg.deleteRepeatComments(hlFlag);
+	
+			
+		
 		
 			
 		}catch(Exception e) {
@@ -411,7 +415,7 @@ public class CommentService {
 		int totalSentComment = comments.size();
 		try {
 		for (String com :comments) {
-			//System.out.println(com);
+			System.out.println(com);
 			bot.sendMessage(com, ch);
 		}
 		
@@ -511,5 +515,38 @@ public class CommentService {
 		String comment =  temp.replace("@", playerName).replace("!", action);
 		return comment;
 	}
+	
+	public static Message generateCommentByMCTS() {
+		return new Message();
+	}
+	
+	public static boolean evaluateHlByDistanceCue(FrameData fd) {
+		boolean flag = false;
+		CharacterData p1 = fd.getCharacter(false);
+		CharacterData p2 = fd.getCharacter(true);
+		try {
+			int d1 = p1.getCenterX();
+			int d2 = p1.getCenterX();
+			float difDis = (float) (Math.abs((Math.abs(d1-d2)-41.0))/879.0);
+		    if(difDis<=0.3) {
+		    	flag = true;
+		    }
+		
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		return flag;
+	}
+	
+	public static boolean evaluateHlByRandomSeed(FrameData fd) {
+		Random rand = new Random();
+		return rand.nextBoolean();
+		
+	}
+	
+	
 	
 }

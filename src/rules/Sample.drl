@@ -48,12 +48,9 @@ then
 $m.setCorner(true);
 end
 
-rule "relativeDistance"
-when
-$p1:CharacterData($p1.playerNumber==true)
-$p2:CharacterData($p2.playerNumber==false)
-then
-end
+
+
+
 rule "ult"
 no-loop
 when CharacterData(action.toString().equals("STAND_D_DF_FB")||action.toString().equals("STAND_F_D_DFA")||action.toString().equals("STAND_F_D_DFB")||action.toString().equals("STAND_D_DF_FC"),$n:playerNumber,$action:action.toString())
@@ -128,4 +125,25 @@ then
 $m.setBlock(true);
 $m.setPlayerName($n);
 $m.setAction($action);
+end
+
+rule "relativeDistance" 
+enabled false
+when
+CharacterData(playerNumber==true,$d1:CharacterData.getCenterX())
+CharacterData(playerNumber==false,$d2:CharacterData.getCenterX())
+Number((Math.abs((Math.abs($d1-$d2)-41.0))/879.0)<0.3)
+then
+System.out.println(Math.abs((Math.abs($d1-$d2)-41.0))/879.0);
+end
+
+rule "relativeDistance2" 
+enabled false
+when
+CharacterData(playerNumber==true,$d1:CharacterData.getCenterX())
+CharacterData(playerNumber==false,$d2:CharacterData.getCenterX())
+//Number((Math.abs((Math.abs($d1-$d2)-41.0))/879.0)<0.3)
+//$d1>Number(2)
+then
+System.out.println(Math.abs((Math.abs($d1-$d2)-41.0))/879.0);
 end

@@ -3,6 +3,7 @@ package comment;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -11,6 +12,9 @@ import java.util.concurrent.TimeUnit;
 import struct.FrameData;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.StatelessKieSession;
 
 import com.cavariux.twitchirc.Chat.Channel;
 
@@ -86,9 +90,12 @@ public class CommentServiceTest {
 			cb.connect();
 			 channel = fbot.joinChannel(cName);
 			 cb.joinChannel(cName);
-			Set<String>comments = new HashSet<String>();
-			comments.add("Exactly huge attack Over there sending ZEN to the asmosphere!");
-		//	CommentService.sendComment(comments, fbot, channel);
+			ArrayList<String>comments = new ArrayList<String>();
+			comments.add("BatChest");
+			
+			
+		CommentService.sendComment(comments, fbot, channel);
+		Thread.sleep(1000);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -133,5 +140,18 @@ public class CommentServiceTest {
 		
 		
 		
+	}
+	
+	@Test
+	public void testDrools() {
+		 KieServices ks;
+		  KieContainer kContainer;
+	 StatelessKieSession kSession;
+	 ks = KieServices.Factory.get();
+	    kContainer = ks.getKieClasspathContainer();
+	    kSession = kContainer.newStatelessKieSession("ksession-rules");
+	    CharacterData p1 = new CharacterData();
+	    CharacterData p2 = new CharacterData();
+	    kSession.execute(Arrays.asList(new Object[] {p1,p2}));
 	}
 }
