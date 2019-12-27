@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import struct.FrameData;
 import org.junit.Before;
@@ -92,10 +94,20 @@ public class CommentServiceTest {
 			 cb.joinChannel(cName);
 			ArrayList<String>comments = new ArrayList<String>();
 			comments.add("BatChest");
-			
-			
-		CommentService.sendComment(comments, fbot, channel);
-		Thread.sleep(1000);
+			CompletableFuture<Integer> future = CompletableFuture.supplyAsync(new Supplier<Integer>() {
+				  @Override
+				    public Integer get() {
+					int send =  CommentService.sendComment(comments, fbot, channel);
+				        return send;
+				    }
+				});
+		
+		
+		
+		int result = future.get();
+		result+=1;
+		System.out.println(result);
+		Thread.sleep(10000);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -104,39 +116,32 @@ public class CommentServiceTest {
 	
 	@Test
 	public void testAsyn() {
-//		CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-//		    // Simulate a long-running Job   
-//		    try {
-//		        TimeUnit.SECONDS.sleep(1);
-//		    } catch (InterruptedException e) {
-//		        throw new IllegalStateException(e);
-//		    }
-//		    System.out.println("I'll run in a separate thread than the main thread.");
-//		});
-//		try {
-//			Thread.sleep(10000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		future.runAsync(() -> {
-//		    // Simulate a long-running Job   
-//		    try {
-//		        TimeUnit.SECONDS.sleep(1);
-//		    } catch (InterruptedException e) {
-//		        throw new IllegalStateException(e);
-//		    }
-//		    System.out.println("I'll run in a separate thread than the main thread.2");
-//		});
-//		
-//		
-//		try {
-//			Thread.sleep(10000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		// Run a task specified by a Supplier object asynchronously
+		CompletableFuture<String> future = CompletableFuture.supplyAsync(new Supplier<String>() {
+		    @Override
+		    public String get() {
+		        try {
+		        	
+		            TimeUnit.SECONDS.sleep(5);
+		        } catch (InterruptedException e) {
+		            throw new IllegalStateException(e);
+		        }
+		        return "Result of the asynchronous computation";
+		    }
+		});
+
+		// Block and get the result of the Future
+		String result;
+		try {
+			result = future.get();
+			System.out.println(result);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		

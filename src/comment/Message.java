@@ -51,7 +51,7 @@ public class Message {
 		this.jump=false;
 		this.hp=false;
 		this.end = false;
-		this.playerName="ZEN";
+		this.playerName="P1";
 		this.action="kick";
 	}
 	public boolean isHp() {
@@ -132,7 +132,7 @@ public class Message {
 		this.next = next;
 	}
 	public void setPlayerName(boolean player) { //1 zen 2 g
-		this.playerName=player?"ZEN":"GARNET";
+		this.playerName=player?"P1":"P2";
 	}
 	public void addComments(String comment) {
 		comments.add(comment);
@@ -144,36 +144,31 @@ public class Message {
 		//shink size
 		Set<String> commentSet = new LinkedHashSet<>();
 		
-		int size =0;
-		//add emotes after hl
-		for(int i =0;i<comments.size();i++) {
-			String temp = comments.get(i);
+		if(comments.size()!=0) {
+			//add emotes after hl
+			for(int i =0;i<comments.size();i++) {
+				String temp = comments.get(i);
+				if(hlFlag) {
+				comments.set(i, temp.concat(" BatChest"));
+				}
+				
+			}
+			
+			for(String comment : comments) {
+				commentSet.add(comment);
+			}
+			
+			comments.clear();
 			if(hlFlag) {
-			comments.set(i, temp.concat(" BatChest"));
+				comments.addAll(commentSet);
+				
+			}else {
+				comments.add((String) commentSet.toArray()[0]);
 			}
 			
 		}
 		
-		for(String comment : comments) {
-			commentSet.add(comment);
-		}
 		
-		comments.clear();
-		if(hlFlag) {
-			comments.addAll(commentSet);
-			
-		}else {
-			comments.add((String) commentSet.toArray()[0]);
-		}
-		
-		
-		try {
-			
-			
-			
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		
 	}

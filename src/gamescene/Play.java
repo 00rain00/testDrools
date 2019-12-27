@@ -9,8 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -122,11 +124,13 @@ public class Play extends GameScene {
 	 public CommentBot cb;
 	public  Channel channel;
 	public String j;
+	public Random rand;
 	//public static SynthesiserV2 synthesizer = new SynthesiserV2("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
 	public ArrayList<Highlight> hlList;
 	public  ArrayList<Double>hlScore;
 	public MatlabEngine eng;
 	 static int frequency=60;
+	 int hlcount =0;
 	public Play() {
 		// 以下4行の処理はgamesceneパッケージ内クラスのコンストラクタには必ず含める
 		this.gameSceneName = GameSceneName.PLAY;
@@ -268,9 +272,11 @@ public class Play extends GameScene {
 		this.elapsedBreakTime = 0;
 		this.keyData = new KeyData();
 		commentLimit = 50;
+		hlcount =0;
 		InputManager.getInstance().clear();
 		 this.hlList = new ArrayList<Highlight>();
 	      msg = new Message();
+	      this.rand = new Random();
 	      try {
 			eng=MatlabEngine.startMatlab();
 		} catch (EngineException e) {
@@ -318,16 +324,16 @@ public class Play extends GameScene {
 		 Highlight hl = CommentService.setHighlight(this.frameData);  
 		 hlList.add(hl);
 		 boolean hlFlag= false;
-		 CompletableFuture<Void> future;
+		
 		// Set<String>comments = new HashSet<String>();
 		 try {
 			
-				  if(fn%frequency==0&&fn>=60) {
+				  if(fn%frequency==0&&fn>=120) {
 					  
 						if(FlagSetting.enableMatlab) {
 							 double hls=0;
 					//	hls = CommentService.evaluateHl(eng,CommentService.prepareHLData(hlList));
-						//System.out.println(hls);
+						
 						 hlScore.add(hls);
 						 if(hlScore.size()>=3) {
 //						   if(Math.abs(hlScore.get(hlScore.size()-1)-hlScore.get(hlScore.size()-2))>=0.1) {
@@ -336,11 +342,15 @@ public class Play extends GameScene {
 //						   if(hls>0.55) {
 //							   hlFlag=true;
 //						   }
-							 
-							hlFlag=CommentService.evaluateHlByDistanceCue(this.frameData); 
-							//hlFlag = CommentService.evaluateHlByRandomSeed(frameData);
+							
+							
 						 }
-						  
+						hlFlag=CommentService.evaluateHlByDistanceCue(hlList); 
+						//hlFlag = CommentService.evaluateHlByRandomSeed(frameData);
+						  if(hlFlag) {
+							  hlcount+=1;
+							System.out.println(hlcount);
+						  }
 						}
 					  
 					  
@@ -351,24 +361,39 @@ public class Play extends GameScene {
 					  }
 					  
 					  if(FlagSetting.enableTwitchChat) {
+						  CompletableFuture<Integer> future ;
 						   if(commentLimit>0) {
-//							   System.out.println("comment limit :"+commentLimit);
-							   double rand= Math.random();
-							   int sent=0;
-							   
-									   if(rand>0.5) {
-									sent =CommentService.sendComment(this.msg.getComments(), fbot, channel);
+							  
+							  
+							   int sent = 0;
+									   if(rand.nextBoolean()) {
+										  future = CompletableFuture.supplyAsync(new Supplier<Integer>() {
+												  @Override
+												    public Integer get() {
+													int send =  CommentService.sendComment(msg.getComments(), fbot, channel);
+												        return send;
+												    }
+												});
 									   }else {
-										   sent =CommentService.sendComment(this.msg.getComments(),cb, channel);
+										   future = CompletableFuture.supplyAsync(new Supplier<Integer>() {
+												  @Override
+												    public Integer get() {
+													int send =  CommentService.sendComment(msg.getComments(), cb, channel);
+												        return send;
+												    }
+												});
 									   }
-						  		commentLimit -=sent;
+						  		
+									   commentLimit -=msg.getComments().size();
+									   System.out.println("comment limit :"+commentLimit);
 						   }
 //						   //  50 comments per 30s 
 						   if(this.frameData.currentFrameNumber>=1700) {
 							   commentLimit =50;
 						   }
 						   
-						   
+				
+						
 					   }
 					   if(FlagSetting.enableTTS) {
 						  
@@ -466,6 +491,7 @@ public class Play extends GameScene {
 		}
 		try {
 			eng.close();
+			Thread.sleep(3000);
 		} catch (EngineException e) {
 			e.printStackTrace();
 		}
