@@ -3,6 +3,7 @@ import struct.FrameData;
 import struct.CharacterData;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,6 +34,11 @@ import com.cavariux.twitchirc.Core.TwitchBot;
 //import javazoom.jl.player.advanced.AdvancedPlayer;
 import com.mathworks.engine.*;
 import java.util.concurrent.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 public class CommentService {
 	static int oriHp = 400;
 	static org.slf4j.Logger logger = LoggerFactory.getLogger(CommentService.class);
@@ -78,7 +84,10 @@ public class CommentService {
 							"The genius @ surviving.",
 							"punishing properly.",
 							"@ not sure what to do, @ is capitalizing it.",
-							"see what @ is doing ."
+							"see what @ is doing .",
+							"The defense is a little shaky here.",
+							"@ packing a few try but not able to catch the opponent.",
+							"He just act so flexible.",
 							
 					};
 					static String[]end= {
@@ -87,7 +96,7 @@ public class CommentService {
 							"@ is going to get in with !  and just like that finish the game.",
 							"@ takes what he can get and go for the reset at the end.",
 							"A ! takes the round here.",
-							"@ able to confirm ! with the ! enough to take the round.",
+							"@ able to  !  enough to take the round.",
 							"You see ,that was a checkmate scenario.",
 							"1,2,3 strike. you are out.",
 							"Nice predict of the hit and get a counter hit.",
@@ -96,47 +105,46 @@ public class CommentService {
 							"Incredible round for @ ."
 					};
 					static String[]distance= {
-							"he is trying to slow this down and find the range.",
+							
 							"@ backs up in the corner instead of choosing go forward.",
-							"The defense is a little shaky here.",
-							"@ packing a few try but not able to catch the opponent.",
+							
 							"@ decides to spend some !  to maintain that distance.",
 							"@ try to keep the space .",
 							"a lot of back up from @.",
-							"not as effective.",
-							"He just act so flax.",
-							"A beautiful ! he get off there.",
-							"@ can have a little bit of come back now.",
+							
+							
+							
+							"@ can have a little bit of break now.",
 							"@ try to switch up a strategy here.",
 							"@ tries to slow down and find the range."
 					};
 					static String[]corner= {
-							" They have no more space to walk backward."	,
-							" really get in there, nice interrupt and throw into the corner.",
-							"look at this the life deficit so high right now.",
+							"They have no more space to walk backward."	,
+							"really get in there, nicely force into the corner.",
+							
 							"@ caging the opponent in that following a branch of !.",
-							"@ stood up and got a cause by the ! .",
-							"@ is in trouble here in the corner now.",
-							"@ will stick out the ! with other actions.",
+							
+							"@ is in trouble here.",
+							"@ will stick out the corner.",
 							"This corner pressure is very cool.",
-							" never seen that before",
+							
 							"@ tucked the opponent very quick",
 							"What a ! under @, he manage to escape the corner.",
 							"So important to trap your opponent into the corner.",
-							"They have no more space to walk backward ",
-							"@ do ! to switch the side."
+							
+							
 							
 					};
 					static String[]ult= {
-							" triggered the ! to confirm another critical arts.",
-							"What a !,following the ! huge damage after that and give @ the moment to  a knock out.",
+							" triggered the ! to do another critical arts.",
+							"What a !, huge damage after that and give @ the moment to  a knock out.",
 							"@ is going to get in with !  and just like that finish the game.",
-							"@ able to confirm ! with the ! enough to take the round.",
+							"@ ! ,enough to take the round.",
 							"Here is the ! into the activation .",
 							"look at the pressure now.",
 							"such a good ! .",
 							"one big hit can lead to a lot of damage.",
-							"Oh !, @ gonna to get a confirm of !.",
+							" @ gonna to get a !.",
 							"It is the damage as @ gets the hits.",
 							"big damage @ optimal there.",
 							"huge damage already lost.",
@@ -144,21 +152,22 @@ public class CommentService {
 							"One hit can lead directly into critical act from @ .",
 							"A ton of damage.",
 							"Any time  get hit,  lose all of that amount.",
-							"The big counter hit confirm into the ! ."
+							" never seen that before",
+							"The big counter hit connect the ! ."
 					};
 					static String[] hp = {
 						"It is pressure time now.",
 						"@ got to do something right now.",
 						"@ need to be very careful.",
-						"God, @ just walk in so many attacks and already down half of the life.",
+						"God, @  already down half of the life.",
 					"@ is losing the momentum .",
-					"@ never stop, it really wants to get in there at all times.",
+					"@ never stop.",
 					"Drain a lot of life.",
 					"He finds of hit, very dangerous for @ .",
 					"Once @ get in, it will overwhelm you."
 					};
 					static String[] jump= {
-							" @ jumps forward and turns around and nearly immediately escaped.",
+							
 							"Here we go.",
 							"@ trying to move in the air. ",
 							"@ plays very quick.",
@@ -166,30 +175,34 @@ public class CommentService {
 							"@ goes for the air because @ wants to jump in ."
 					};
 					static String[]heavy= {
-							"! huge damage output from @.",
-							"! works so well because it  give @ the advantage afterwards",
-							"@ stand out followed ! a big damage now.",
+							"huge damage output from @.",
+							"! works so well it gives @ the advantage ",
+							"@ stand out followed ! .",
 							"The offense is overwhelming.",
-							"@ try to ! but a little too late while end up in the front attack.",
+							
 							"Great start of the @ with the ! .",
 							"@ could get more damage.",
-							"@ is controlling the around but if @ can find a way get in.",
+							"@ is controlling the around ",
 							"@ get in there with a ! right to the face.",
 							"! is really hard to answer.",
 							"It is going to be  a lot of ! .",
+							
+							" the life deficit so high .",
+							"@ stand up and got a  ! .",
+							"@ rolled over and make the lead of big damage and pressure.",
 							"Immediately active the ! ."
 					};
 					static String[]combo= {
-							"Very nice ! and still able to combo.",
-							"@ add a stun, a follow of combo , a ton of damage here.",
-							"@ takes what he can get and go for the reset at the end.",
-							"The offense is overwhelming.",
-							"@ a dash up and finally hit it and going to give a combo.",
+							"Very nice a ! combo.",
+							"@ add a combo , a ton of damage here.",
+							
+							
+							"@ hit the opponent and going to give a combo.",
 							"a big combo and follow up ! .",
-							"@ rolled over and make the lead of big damage and pressure.",
+							
 							"Wow！ , a make up of ! and ! right there.",
-							" see that @ use ! a lot to get through and combo into the opponent.",
-							"There is no remorse and as soon as @ found an opening."
+							"  @ use !  to get through and combo into the opponent.",
+							
 					};
 					static String[]block= {
 							" @ blocking but no punish.",
@@ -200,6 +213,16 @@ public class CommentService {
 					};
 					
 					
+	static ArrayList<String>dmch = readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\dm_ch.txt");
+	static ArrayList<String>wannengch=readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\normal_ch.txt");
+	static ArrayList<String>heavych=readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\heavy_ch.txt");
+	static ArrayList<String>comboch=readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\combo_ch.txt");
+	static ArrayList<String>hpch=readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\hp_ch.txt");
+	static ArrayList<String>ultch=readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\ult_ch.txt");
+	static ArrayList<String>cornerch=readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\corner_ch.txt");
+	static ArrayList<String>distancech=readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\distance_ch.txt");
+	static ArrayList<String>endch=readComments("C:\\Users\\irvine\\git\\testDrools\\src\\comment\\end_ch.txt");
+	
 	
 	public static Highlight setHighlight(FrameData fd) {
 		
@@ -325,15 +348,20 @@ public class CommentService {
 			double d1 = 1.0 - ((double)Math.abs(480.0 - p1.getCenterX())/480.0); //0->left corner 1-> right corner
 			double d2 = 1.0 - ((double)Math.abs(480.0 - p2.getCenterX())/480.0);
 			
-			
+			Random rand =new Random();
 			String action = getActionRealName(msg.getAction());
-			String playerName = msg.getPlayerName();
+			String playerName = rand.nextBoolean()?"P1":"P2";
+			
+			
+			
+			
+			
 			//jifei
-			if((msg.getOffence()==1||msg.getOffence()==0)&msg.getState()=="air") {
-				String text =air[getRandomNumber(air.length)];
-				msg.addComments(matchTemplate(text,action,playerName));
-				
-			}
+//			if((msg.getOffence()==1||msg.getOffence()==0)&msg.getState()=="air") {
+//				String text =air[getRandomNumber(air.length)];
+//				msg.addComments(matchTemplate(text,action,playerName));
+//				
+//			}
 //			normal
 //			if(msg.getOffence()==-1) {
 //				String text =normal[getRandomNumber(normal.length)];
@@ -342,59 +370,61 @@ public class CommentService {
 //			}
 //			distance
 			if(difdis>=0.5) {
-				String text =distance[getRandomNumber(distance.length)];
+				String text =distancech.get(getRandomNumber(distancech.size()));
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
 			//corner
-			if(msg.isCorner()&&difdis<=0.4) {
-				String text =corner[getRandomNumber(corner.length)];
+			if(difdis<=0.4&&(d1>=0.9||d1<=0.1)&(d2>=0.9||d2<=0.1)) {
+				String text =cornerch.get(getRandomNumber(cornerch.size()));
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
 			//ult
 			if(msg.isUlt()) {
-				String text =ult[getRandomNumber(ult.length)];
+				String text =ultch.get(getRandomNumber(cornerch.size()));
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
 			//jump
-			if(msg.isJump()) {
-				String text =jump[getRandomNumber(jump.length)];
-				String a =matchTemplate(text,action,playerName);
-				msg.addComments(a);
-			}
+//			if(msg.isJump()) {
+//				String text =jump[getRandomNumber(jump.length)];
+//				String a =matchTemplate(text,action,playerName);
+//				msg.addComments(a);
+//			}
 			//hpDangerous
 			if(msg.isHp()) {
-				String text =hp[getRandomNumber(hp.length)];
+				String text =hpch.get(getRandomNumber(hpch.size()));
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
 			//heavy
 			if(msg.isHeavy()) {
-				String text =heavy[getRandomNumber(heavy.length)];
+				String text =heavych.get(getRandomNumber(heavych.size()));
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
 			//end
 			if(msg.isEnd()) {
-				String text =end[getRandomNumber(end.length)];
+				String text =endch.get(getRandomNumber(endch.size()));
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
 			//conbo
 			if(msg.isCombo()) {
-				String text =combo[getRandomNumber(combo.length)];
+				String text =comboch.get(getRandomNumber(comboch.size()));
 				String a =matchTemplate(text,action,playerName);
 				msg.addComments(a);
 			}
 			//block
-			if(msg.isBlock()) {
-				String text =block[getRandomNumber(block.length)];
-				String a =matchTemplate(text,action,playerName);
-				msg.addComments(a);
-			}
-
+//			if(msg.isBlock()) {
+//				String text =block[getRandomNumber(block.length)];
+//				String a =matchTemplate(text,action,playerName);
+//				msg.addComments(a);
+//			}
+			String text =dmch.get(getRandomNumber(dmch.size()));
+			String a =matchTemplate(text,action,playerName);
+			msg.addComments(a);
 			
 
 		
@@ -517,7 +547,7 @@ public class CommentService {
 	public static String matchTemplate(String temp,String action, String playerName) {
 		
 		
-		String comment =  temp.replace("@", playerName).replace("!", action);
+		String comment =  temp.replace("@", playerName).replace("$", action);
 		return comment;
 	}
 	
@@ -532,9 +562,9 @@ public class CommentService {
 			double d1 = list.get(list.size()-1).getDifDis();
 			double d2 = list.get(list.size()-60).getDifDis();
 			double difDis =Math.abs(d1-d2);
-			System.out.println(difDis);
-			System.out.println(d1);
-			System.out.println(d2);
+//			System.out.println(difDis);
+//			System.out.println(d1);
+//			System.out.println(d2);
 			if(difDis>=0.2) {
 		    	flag = true;
 		    }
@@ -554,7 +584,27 @@ public class CommentService {
 		return flag;
 		
 	}
+	public static ArrayList<String> readComments(String address) {
+		
+		ArrayList<String>coms=new ArrayList<String>();
+		
+		try {
+			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(address),"gbk"));
+			
+			
+			String line = null;
+			while((line = br.readLine()) != null) {
+				//System.out.println(line);
+				
+				coms.add(line);}
+			br.close();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return coms;
+	}
 	
-
 	
 }

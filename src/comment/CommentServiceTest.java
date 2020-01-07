@@ -90,14 +90,14 @@ public class CommentServiceTest {
 			cb = new CommentBot();
 			fbot.connect();
 			cb.connect();
-			 channel = fbot.joinChannel(cName);
-			 cb.joinChannel(cName);
+			 fbot.joinChannel(cName);
+			 channel =  cb.joinChannel(cName);
 			ArrayList<String>comments = new ArrayList<String>();
 			comments.add("BatChest");
 			CompletableFuture<Integer> future = CompletableFuture.supplyAsync(new Supplier<Integer>() {
 				  @Override
 				    public Integer get() {
-					int send =  CommentService.sendComment(comments, fbot, channel);
+					int send =  CommentService.sendComment(comments, cb, channel);
 				        return send;
 				    }
 				});
@@ -159,4 +159,13 @@ public class CommentServiceTest {
 	    CharacterData p2 = new CharacterData();
 	    kSession.execute(Arrays.asList(new Object[] {p1,p2}));
 	}
+	
+	@Test
+	public void readcomments() {
+		
+	ArrayList <String>coms = new ArrayList<String>();
+	//coms =CommentService.readComments();
+		
+	}
+	
 }

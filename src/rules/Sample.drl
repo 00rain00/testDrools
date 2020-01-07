@@ -7,6 +7,7 @@ import java.lang.Math
 
 
 rule "p1"
+enabled false
 when 
 $p1:CharacterData($p1.playerNumber==true,$p1.isHitConfirm()==true)
 
@@ -17,7 +18,7 @@ $m.setOffence(1);
 end
 
 rule "p2"
-
+enabled false
 when 
 $p1:CharacterData($p1.playerNumber==false,$p1.isHitConfirm()==true)
 
@@ -28,7 +29,7 @@ $m.setOffence(0);
 end
 
 rule "air"
-
+enabled false
 when 
 $p1:CharacterData($p1.getState().toString().equals("AIR"))
 
@@ -75,7 +76,7 @@ $m.setAction($action);
 end
 rule "forjump"
 no-loop
-
+enabled false
 when  CharacterData(action.toString().equals("FOR_JUMP")||action.toString().equals("BACK_JUMP"),$n:playerNumber,$action:action.toString())
 $m:Message()
 then  
@@ -95,7 +96,7 @@ end
 
 rule "lose"
 when 
-CharacterData(hp<=0)
+CharacterData(hp<=20)
 $p1:CharacterData(hp>0,$n:playerNumber,$action:action.toString())
 $m:Message()
 then

@@ -188,7 +188,7 @@ public class Play extends GameScene {
 			this.setNextGameScene(lunch);
 		}
 		if (FlagSetting.enableWindow && !FlagSetting.muteFlag) {
-			//SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
+			SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
 		}
 		if (FlagSetting.enableComment) {
 			this.ks = KieServices.Factory.get();
@@ -206,7 +206,7 @@ public class Play extends GameScene {
 			fbot.connect();
 			cb.connect();
 			channel= fbot.joinChannel(cName);
-			 cb.joinChannel(cName);
+			channel= cb.joinChannel(cName);
 			
 		} catch(Exception e) {
 			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot connect to twitch");
@@ -378,7 +378,7 @@ public class Play extends GameScene {
 										   future = CompletableFuture.supplyAsync(new Supplier<Integer>() {
 												  @Override
 												    public Integer get() {
-													int send =  CommentService.sendComment(msg.getComments(), cb, channel);
+													int send =  CommentService.sendComment(msg.getComments(), fbot, channel);
 												        return send;
 												    }
 												});
